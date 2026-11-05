@@ -1,3 +1,4 @@
+// components/home/Banner.tsx
 'use client'
 
 import React, { useState, useEffect } from 'react';
@@ -11,7 +12,6 @@ import {
 import { Button } from '@/components/ui/button';
 import Autoplay from 'embla-carousel-autoplay';
 import BannerGrid from './BannerGrid';
-
 
 export interface SlideData {
     topText: string;
@@ -62,8 +62,8 @@ export default function Banner() {
     }, [api]);
 
     return (
-        <section className="w-full bg-muted-foreground/20 py-12 ">
-            <div className="mx-auto max-w-7xl">
+        <section className="w-full bg-background py-6 sm:py-10 lg:py-14">
+            <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
                 <Carousel
                     setApi={setApi}
                     opts={{
@@ -72,28 +72,30 @@ export default function Banner() {
                     }}
                     plugins={[
                         Autoplay({
-                            delay: 5000,
+                            delay: 5500,
                             stopOnInteraction: false,
                         }),
                     ]}
                     className="w-full"
                 >
-                    {/* Slides */}
-                    <CarouselContent>
+                    {/* Carousel Slides */}
+                    <CarouselContent className="-ml-0">
                         {sliders.map((slider, index) => (
-                            <CarouselItem key={index}>
+                            <CarouselItem key={index} className="pl-0">
                                 <BannerGrid data={slider} />
                             </CarouselItem>
                         ))}
                     </CarouselContent>
 
-                    {/* slider number */}
-                    <div className="mt-12 flex items-center justify-between border-t border-border/40 pt-6">
-                        <div className="flex items-center gap-3 text-xs font-medium text-muted-foreground">
-                            <span className="font-mono">
+                    {/* Bottom Indicator & Nav Controls */}
+                    <div className="mt-6 flex items-center justify-between border-t border-border/60 pt-4 sm:mt-8 sm:pt-6">
+
+                        {/* Slide Indicator & Progress Bar */}
+                        <div className="flex items-center gap-2.5 sm:gap-3 text-xs font-medium text-muted-foreground">
+                            <span className="font-mono text-[11px] sm:text-xs">
                                 {String(current).padStart(2, '0')} / {String(count || sliders.length).padStart(2, '0')}
                             </span>
-                            <div className="relative h-1 w-20 overflow-hidden rounded-full bg-border">
+                            <div className="relative h-1 w-14 overflow-hidden rounded-full bg-border sm:w-20">
                                 <div
                                     className="h-full bg-primary transition-all duration-300 ease-out"
                                     style={{
@@ -103,32 +105,35 @@ export default function Banner() {
                             </div>
                         </div>
 
-                        {/* Slogan */}
+                        {/* Middle Editorial Tagline */}
                         <p className="hidden text-xs text-muted-foreground md:block">
                             Turn the page. Take your time.
                         </p>
 
-                        {/* Navigation Arrows */}
-                        <div className="flex items-center gap-2">
+                        {/* Arrow Buttons */}
+                        <div className="flex items-center gap-1.5 sm:gap-2">
                             <Button
+                                type="button"
                                 variant="outline"
                                 size="icon"
                                 onClick={() => api?.scrollPrev()}
                                 aria-label="Previous slide"
-                                className="h-10 w-10 rounded-full border-border bg-background text-foreground hover:bg-muted"
+                                className="h-8 w-8 rounded-full border-border bg-card text-foreground hover:bg-muted sm:h-9 sm:w-9"
                             >
-                                <ArrowLeft className="h-4 w-4" />
+                                <ArrowLeft className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
                             </Button>
                             <Button
+                                type="button"
                                 variant="outline"
                                 size="icon"
                                 onClick={() => api?.scrollNext()}
                                 aria-label="Next slide"
-                                className="h-10 w-10 rounded-full border-border bg-background text-foreground hover:bg-muted"
+                                className="h-8 w-8 rounded-full border-border bg-card text-foreground hover:bg-muted sm:h-9 sm:w-9"
                             >
-                                <ArrowRight className="h-4 w-4" />
+                                <ArrowRight className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
                             </Button>
                         </div>
+
                     </div>
                 </Carousel>
             </div>
