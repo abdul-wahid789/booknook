@@ -1,86 +1,72 @@
-import React from "react";
+// components/shared/BookCard.tsx
 import Image from "next/image";
 import Link from "next/link";
-import { MoveUpRight } from "lucide-react";
-import { Card, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
+import { BookOpen } from "lucide-react";
 import { TBook } from "@/schemas/book";
 
 interface BookCardProps {
-    book: TBook
+  book: TBook;
 }
 
-export const BookCard = ({ book }: BookCardProps) => {
-    console.log(book)
-    const isAvailable = book.totalCopies > 0
-    return (
-        <Link href={`/book/${book._id}`}>
+export default function BookCard({ book }: BookCardProps) {
+  const isAvailable = (book.totalCopies ?? 0) > 0;
 
-            <Card className="group relative flex h-full flex-col overflow-hidden p-0 border border-border bg-card transition-all duration-300 hover:-translate-y-1 hover:border-primary/40 hover:shadow-lg hover:shadow-primary/5">
-                {/* 3:4 Cover Aspect Ratio */}
-                <div className="relative aspect-[3/4] w-full overflow-hidden bg-muted">
-                    <Image
-                        src={book.image}
-                        alt={book.title}
-                        fill
-                        sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 16vw"
-                        className="object-cover transition-transform duration-500 ease-out group-hover:scale-105"
-                    />
+  return (
+    <Link
+      href={`/books/${book._id}`}
+      className="group relative flex flex-col overflow-hidden rounded-2xl border border-border/70 bg-card p-3 shadow-2xs transition-all duration-300 hover:-translate-y-1 hover:border-primary/40 hover:shadow-md"
+    >
+      {/* Cover Image Container */}
+      <div className="relative aspect-[2/3] w-full overflow-hidden rounded-xl border border-border/60 bg-muted/40">
+        {book.image ? (
+          <Image
+            src={book.image}
+            alt={book.title}
+            fill
+            sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 20vw"
+            className="object-cover transition-transform duration-500 ease-out group-hover:scale-105"
+            unoptimized
+          />
+        ) : (
+          <div className="flex h-full w-full items-center justify-center text-muted-foreground">
+            <BookOpen className="h-6 w-6 stroke-[1.5]" />
+          </div>
+        )}
 
-                    {/* Ambient Gradient */}
-                    <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-black/20 opacity-70" />
+        {/* Category Badge (Simple div/span, NOT a Link) */}
+        <span className="absolute top-2.5 left-2.5 rounded-full border border-border/60 bg-background/80 px-2 py-0.5 text-[10px] font-medium text-foreground backdrop-blur-xs">
+          {book.category}
+        </span>
+      </div>
 
-                    {/* Top Badge */}
-                    <div className="absolute top-2 left-2 z-10">
-                        <Badge
-                            variant={isAvailable ? "default" : "secondary"}
-                            className={`px-1.5 py-0 text-[10px] font-medium leading-tight ${isAvailable
-                                ? "border-none bg-primary text-primary-foreground"
-                                : "border-border bg-destructive/50 text-white"
-                                }`}
-                        >
-                            {isAvailable ? "Available" : "Not Available"}
-                        </Badge>
-                    </div>
+      {/* Book Metadata (Simple div/h3/p, NOT nested Links) */}
+      <div className="mt-3 flex flex-1 flex-col justify-between space-y-2">
+        <div className="space-y-0.5">
+          <h3 className="line-clamp-1 font-heading text-sm font-medium text-foreground transition-colors group-hover:text-primary">
+            {book.title}
+          </h3>
+          <p className="line-clamp-1 text-xs text-muted-foreground">
+            {book.authorName}
+          </p>
+        </div>
 
-                    {/* Category Pill */}
-                    <div className="absolute bottom-2 left-2 z-10">
-                        <span className="rounded bg-black/50 px-1.5 py-0.5 text-[10px] font-medium text-white backdrop-blur-xs">
-                            {book.category}
-                        </span>
-                    </div>
-                </div>
+        {/* Status / Copies */}
+        <div className="flex items-center justify-between border-t border-border/60 pt-2 text-[11px]">
+          <span
+            className={
+              isAvailable
+                ? "text-emerald-600 dark:text-emerald-400 font-medium"
+                : "text-accent-foreground font-medium"
+            }
+          >
+            {isAvailable ? `${book.totalCopies} available` : "Borrowed"}
+          </span>
 
-                {/* Metadata */}
-                <CardHeader className="p-3 pb-1 space-y-0.5">
-                    <CardTitle
-                        title={book.title}
-                        className="line-clamp-2 min-h-[2.25rem] font-heading text-sm font-medium leading-snug text-card-foreground transition-colors group-hover:text-primary"
-                    >
-                        {book.title}
-                    </CardTitle>
-                    <p className="line-clamp-1 text-[11px] text-muted-foreground">
-                        by <span className="font-medium text-foreground">{book.authorName}</span>
-                    </p>
-                </CardHeader>
-
-                {/* Button Footer */}
-                <CardFooter className="mt-auto p-3 pt-2">
-                    <Link href={`/book/${book._id}`} className="w-full">
-                        <Button
-                            variant="secondary"
-                            size="sm"
-                            className="group/btn h-8 w-full  rounded-md border border-border/70 bg-secondary/60 px-2.5 text-sm font-medium text-secondary-foreground transition-all hover:bg-primary hover:text-primary-foreground flex"
-                        >
-                            <span>View Details</span>
-                            <MoveUpRight className="h-3 w-3 transition-transform duration-200 group-hover/btn:translate-x-0.5 group-hover/btn:-translate-y-0.5" />
-                        </Button>
-                    </Link>
-                </CardFooter>
-            </Card>
-        </Link>
-    );
-};
-
-export default BookCard;
+          <span className="font-semibold text-primary transition-transform group-hover:translate-x-0.5">
+            View →
+          </span>
+        </div>
+      </div>
+    </Link>
+  );
+}

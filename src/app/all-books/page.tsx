@@ -1,5 +1,6 @@
 import AllBooksGrid from '@/components/all-books/AllBooksGrid';
 import BooksList from '@/components/all-books/BooksList';
+import { BooksListSkeleton } from '@/components/all-books/BooksListSkeleton';
 import React, { Suspense } from 'react';
 
 const page = () => {
@@ -15,7 +16,7 @@ const page = () => {
                     <p className='text-muted-foreground'>Good books, shared by good people. Browse the shelves and borrow a story for a few days.</p>
                 </div>
 
-                <Suspense fallback={'loadingg.....'}>
+                <Suspense fallback={<BooksListSkeleton count={10} />}>
                     <BooksList />
                 </Suspense>
 

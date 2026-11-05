@@ -142,11 +142,11 @@ export default function MyBooksPage() {
             <table className="w-full border-collapse text-left">
               <thead>
                 <tr className="border-b border-border/70 bg-muted/40 text-[11px] font-bold uppercase tracking-wider text-muted-foreground">
-                  <th className="py-3.5 px-6">Book / Author</th>
-                  <th className="py-3.5 px-4">Category</th>
-                  <th className="py-3.5 px-4">Date Added</th>
-                  <th className="py-3.5 px-4">Copies / Status</th>
-                  <th className="py-3.5 px-6 text-right">Actions</th>
+                  <th className="py-3.5 px-4 sm:px-6">Book / Author</th>
+                  <th className="hidden py-3.5 px-4 md:table-cell">Category</th>
+                  <th className="hidden py-3.5 px-4 md:table-cell">Date Added</th>
+                  <th className="hidden py-3.5 px-4 md:table-cell">Copies / Status</th>
+                  <th className="py-3.5 px-4 sm:px-6 text-right">Actions</th>
                 </tr>
               </thead>
 
@@ -178,9 +178,9 @@ export default function MyBooksPage() {
                         className="group transition-colors hover:bg-muted/30"
                       >
                         {/* Book / Author & Thumbnail */}
-                        <td className="py-4 px-6">
-                          <div className="flex items-center gap-4">
-                            <div className="relative aspect-[2/3] h-16 w-11 shrink-0 overflow-hidden rounded-xs border border-border/70 bg-muted/50 p-1 shadow-2xs">
+                        <td className="py-4 px-4 sm:px-6">
+                          <div className="flex items-center gap-3 sm:gap-4">
+                            <div className="relative aspect-[2/3] h-14 w-10 sm:h-16 sm:w-11 shrink-0 overflow-hidden rounded-xs border border-border/70 bg-muted/50 p-1 shadow-2xs">
                               {book.image ? (
                                 <Image
                                   src={book.image}
@@ -196,32 +196,32 @@ export default function MyBooksPage() {
                               )}
                             </div>
 
-                            <div className="space-y-1">
+                            <div className="space-y-0.5 sm:space-y-1 min-w-0">
                               <Link
                                 href={`/books/${book._id}`}
-                                className="block font-heading text-sm font-medium text-foreground transition-colors hover:text-primary"
+                                className="block font-heading text-sm font-medium text-foreground transition-colors hover:text-primary truncate max-w-[150px] sm:max-w-xs md:max-w-none"
                               >
                                 {book.title}
                               </Link>
-                              <p className="text-muted-foreground">
+                              <p className="text-muted-foreground truncate max-w-[150px] sm:max-w-xs md:max-w-none">
                                 {book.authorName}
                               </p>
                             </div>
                           </div>
                         </td>
 
-                        {/* Category */}
-                        <td className="py-4 px-4 text-muted-foreground">
+                        {/* Category (Hidden on small screens) */}
+                        <td className="hidden py-4 px-4 text-muted-foreground md:table-cell">
                           {book.category}
                         </td>
 
-                        {/* Date Added */}
-                        <td className="py-4 px-4 text-muted-foreground">
+                        {/* Date Added (Hidden on small screens) */}
+                        <td className="hidden py-4 px-4 text-muted-foreground md:table-cell">
                           {dateAdded}
                         </td>
 
-                        {/* Status / Stock */}
-                        <td className="py-4 px-4">
+                        {/* Status / Stock (Hidden on small screens) */}
+                        <td className="hidden py-4 px-4 md:table-cell">
                           {isAvailable ? (
                             <span className="inline-flex items-center gap-1.5 rounded-sm border border-secondary/40 bg-secondary px-2 py-0.5 text-[11px] font-medium text-secondary-foreground">
                               <Check className="h-3 w-3 stroke-[2.5]" />
@@ -236,13 +236,13 @@ export default function MyBooksPage() {
                         </td>
 
                         {/* Action Buttons */}
-                        <td className="py-4 px-6 text-right">
-                          <div className="inline-flex items-center gap-2">
-                            <Link href={`/my-books/${book._id}/edit`}>
+                        <td className="py-4 px-4 sm:px-6 text-right">
+                          <div className="inline-flex items-center justify-end gap-1.5 sm:gap-2">
+                            <Link href={`/book/${book._id}/edit`}>
                               <Button
                                 variant="outline"
                                 size="sm"
-                                className="h-8 border-border bg-card px-3 text-xs font-medium text-foreground hover:bg-muted hover:text-primary"
+                                className="h-8 border-border bg-card px-2.5 sm:px-3 text-xs font-medium text-foreground hover:bg-muted hover:text-primary"
                               >
                                 Edit
                               </Button>
@@ -254,17 +254,17 @@ export default function MyBooksPage() {
                               size="sm"
                               disabled={isDeleting}
                               onClick={() => setSelectedBookForDelete(book)}
-                              className="h-8 border-border bg-card px-3 text-xs font-medium text-destructive hover:bg-destructive/10 hover:text-destructive"
+                              className="h-8 border-border bg-card px-2.5 sm:px-3 text-xs font-medium text-destructive hover:bg-destructive/10 hover:text-destructive"
                             >
                               {isDeleting ? (
                                 <>
-                                  <Loader2 className="mr-1 h-3 w-3 animate-spin" />
-                                  Deleting...
+                                  <Loader2 className="h-3 w-3 animate-spin sm:mr-1" />
+                                  <span className="hidden sm:inline">Deleting...</span>
                                 </>
                               ) : (
                                 <>
-                                  <Trash2 className="mr-1 h-3 w-3" />
-                                  Delete
+                                  <Trash2 className="h-3 w-3 sm:mr-1" />
+                                  <span className="hidden sm:inline">Delete</span>
                                 </>
                               )}
                             </Button>
@@ -290,7 +290,7 @@ export default function MyBooksPage() {
           </div>
 
           {/* Table Bottom Footer Status */}
-          <div className="border-t border-border/70 bg-card px-6 py-3.5 text-xs text-muted-foreground">
+          <div className="border-t border-border/70 bg-card px-4 sm:px-6 py-3.5 text-xs text-muted-foreground">
             Showing {books.length} of {books.length} shared books
           </div>
         </div>
