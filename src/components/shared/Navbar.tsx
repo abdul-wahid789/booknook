@@ -32,7 +32,7 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet";
 import { useSession, signOut } from "@/lib/auth-client";
-import { ModeToggle } from "@/components/shared/ModeToggle";
+import { ModeToggle } from "./ModeToggle";
 
 export default function Navbar() {
   const pathname = usePathname();
@@ -45,7 +45,7 @@ export default function Navbar() {
     { name: "All Books", href: "/all-books", icon: BookOpen },
     { name: "Add Book", href: "/add-book", icon: PlusCircle },
     { name: "My Books", href: "/my-books", icon: Library },
-    { name: "My Borrows", href: "/borrowed-books", icon: BookmarkCheck },
+    { name: "My Borrows", href: "/my-borrows", icon: BookmarkCheck },
   ];
 
   const handleSignOut = async () => {

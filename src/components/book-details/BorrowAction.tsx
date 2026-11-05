@@ -88,7 +88,7 @@ export default function BorrowAction({
           Planned return:
         </span>
         <Popover>
-          <PopoverTrigger asChild>
+          <PopoverTrigger>
             <Button
               type="button"
               variant="outline"
