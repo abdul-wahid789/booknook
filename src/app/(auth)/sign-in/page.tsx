@@ -6,7 +6,9 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { Controller, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
+import { FaGithub, FaGoogle } from "react-icons/fa";
 import {
+
   CornerDownLeft,
   Eye,
   EyeOffIcon,
@@ -45,12 +47,11 @@ type TSignIn = z.infer<typeof signInSchema>;
 function SignInContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
-
-  // Read callbackUrl from search parameters, default to /all-books
   const callbackUrl = searchParams.get('callbackUrl') || '/all-books';
 
   const [isVisiPass, setIsVisiPass] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [socialLoading, setSocialLoading] = useState<'google' | 'github' | null>(null);
 
   const header = {
     smallTitle: 'WELCOME BACK TO THE SHELF',
@@ -69,6 +70,20 @@ function SignInContent() {
 
   const toggleEye = () => setIsVisiPass((prev) => !prev);
 
+  async function handleSocialSignIn(provider: 'google' | 'github') {
+    try {
+      setSocialLoading(provider);
+      await signIn.social({
+        provider,
+        callbackURL: callbackUrl,
+      });
+    } catch (err: unknown) {
+      console.error(err);
+      errorToast(err instanceof Error ? err.message : `Failed to connect with ${provider}`);
+      setSocialLoading(null);
+    }
+  }
+
   async function onSubmit(data: TSignIn) {
     try {
       setIsSubmitting(true);
@@ -82,8 +97,6 @@ function SignInContent() {
       }
 
       successToast('Signed in successfully');
-
-      // Redirect to the intended page (e.g. book-details or my-books)
       router.push(callbackUrl);
       router.refresh();
     } catch (err: unknown) {
@@ -94,12 +107,13 @@ function SignInContent() {
     }
   }
 
+  const isAnyLoading = isSubmitting || socialLoading !== null;
+
   return (
     <div className="w-full">
       <HeaderSection {...header} />
 
       <div className="mt-8 flex flex-col items-stretch gap-8 lg:flex-row lg:items-start lg:justify-between">
-
         {/* Main Sign-In Card */}
         <Card className="w-full flex-1 rounded-2xl border border-border/70 bg-card p-6 shadow-2xs sm:p-8 md:p-10">
           <CardHeader className="flex flex-row items-center justify-between p-0 pb-6">
@@ -111,14 +125,57 @@ function SignInContent() {
 
           <FieldSeparator />
 
-          <CardContent className="p-0 pt-6">
+          <CardContent className="space-y-6 p-0 pt-6">
+            {/* Social Authentication Buttons */}
+            <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+              <Button
+                type="button"
+                variant="outline"
+                disabled={isAnyLoading}
+                onClick={() => handleSocialSignIn('google')}
+                className="h-10 w-full gap-2 border-border bg-card text-xs font-medium text-foreground hover:bg-muted"
+              >
+                {socialLoading === 'google' ? (
+                  <Spinner className="h-4 w-4" />
+                ) : (
+                  <FaGoogle  className="h-4 w-4 text-primary" />
+                )}
+                <span>Continue with Google</span>
+              </Button>
+
+              <Button
+                type="button"
+                variant="outline"
+                disabled={isAnyLoading}
+                onClick={() => handleSocialSignIn('github')}
+                className="h-10 w-full gap-2 border-border bg-card text-xs font-medium text-foreground hover:bg-muted"
+              >
+                {socialLoading === 'github' ? (
+                  <Spinner className="h-4 w-4" />
+                ) : (
+                  <FaGithub  className="h-4 w-4 text-foreground" />
+                )}
+                <span>Continue with GitHub</span>
+              </Button>
+            </div>
+
+            {/* Divider */}
+            <div className="relative flex items-center justify-center">
+              <div className="absolute inset-0 flex items-center">
+                <span className="w-full border-t border-border/70" />
+              </div>
+              <span className="relative bg-card px-3 text-[11px] uppercase tracking-wider text-muted-foreground">
+                Or continue with email
+              </span>
+            </div>
+
+            {/* Email Form */}
             <form
               id="form-signin"
               onSubmit={form.handleSubmit(onSubmit)}
               className="space-y-5"
             >
               <FieldGroup className="space-y-4">
-                {/* Email */}
                 <Controller
                   name="email"
                   control={form.control}
@@ -132,7 +189,7 @@ function SignInContent() {
                           aria-invalid={fieldState.invalid}
                           autoComplete="email"
                           type="email"
-                          placeholder="wahid@domain.com"
+                          placeholder="user@example.com"
                           className="text-sm"
                         />
                         <InputGroupAddon>
@@ -144,7 +201,6 @@ function SignInContent() {
                   )}
                 />
 
-                {/* Password */}
                 <Controller
                   name="password"
                   control={form.control}
@@ -193,16 +249,16 @@ function SignInContent() {
             <Button
               type="submit"
               form="form-signin"
-              className="h-11 w-full text-xs sm:text-sm font-semibold shadow-sm hover:bg-primary/90"
-              disabled={isSubmitting}
+              className="h-11 w-full text-xs font-semibold shadow-sm hover:bg-primary/90 sm:text-sm"
+              disabled={isAnyLoading}
             >
               {isSubmitting ? (
                 <>
                   <Spinner className="mr-2 h-4 w-4" />
-                  <span>Please wait...</span>
+                  <span>Signing in...</span>
                 </>
               ) : (
-                <span>Sign In</span>
+                <span>Sign In with Email</span>
               )}
             </Button>
 
@@ -239,7 +295,7 @@ function SignInContent() {
                 <Zap className="h-5 w-5" />
               </div>
               <div>
-                <h3 className="text-xs sm:text-sm font-semibold text-foreground">
+                <h3 className="text-xs font-semibold text-foreground sm:text-sm">
                   Instant shelf access
                 </h3>
                 <p className="mt-1 text-xs leading-normal text-muted-foreground">
@@ -253,7 +309,7 @@ function SignInContent() {
                 <UsersRoundCollaboration className="h-5 w-5" />
               </div>
               <div>
-                <h3 className="text-xs sm:text-sm font-semibold text-foreground">
+                <h3 className="text-xs font-semibold text-foreground sm:text-sm">
                   Manage your contributions
                 </h3>
                 <p className="mt-1 text-xs leading-normal text-muted-foreground">
@@ -267,7 +323,7 @@ function SignInContent() {
                 <CornerDownLeft className="h-5 w-5" />
               </div>
               <div>
-                <h3 className="text-xs sm:text-sm font-semibold text-foreground">
+                <h3 className="text-xs font-semibold text-foreground sm:text-sm">
                   Track returns easily
                 </h3>
                 <p className="mt-1 text-xs leading-normal text-muted-foreground">
@@ -277,7 +333,6 @@ function SignInContent() {
             </div>
           </CardContent>
         </Card>
-
       </div>
     </div>
   );

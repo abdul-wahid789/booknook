@@ -13,7 +13,7 @@ export default function BookCard({ book }: BookCardProps) {
 
   return (
     <Link
-      href={`/books/${book._id}`}
+      href={`/book/${book._id}`}
       className="group relative flex flex-col overflow-hidden rounded-2xl border border-border/70 bg-card p-3 shadow-2xs transition-all duration-300 hover:-translate-y-1 hover:border-primary/40 hover:shadow-md"
     >
       {/* Cover Image Container */}

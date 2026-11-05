@@ -11,6 +11,7 @@ import {
   PlusCircle,
   BookmarkCheck,
   Library,
+  Home,
 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
@@ -40,13 +41,20 @@ export default function Navbar() {
   const { data, isPending } = useSession();
   const [mobileOpen, setMobileOpen] = useState(false);
 
-  const links = [
-    { name: "Home", href: "/" },
+  // Public links always visible
+  const publicLinks = [
+    { name: "Home", href: "/", icon: Home },
     { name: "All Books", href: "/all-books", icon: BookOpen },
+  ];
+
+  // Protected links only visible when signed in
+  const authLinks = [
     { name: "Add Book", href: "/add-book", icon: PlusCircle },
     { name: "My Books", href: "/my-books", icon: Library },
     { name: "My Borrows", href: "/my-borrows", icon: BookmarkCheck },
   ];
+
+  const visibleLinks = data?.user ? [...publicLinks, ...authLinks] : publicLinks;
 
   const handleSignOut = async () => {
     try {
@@ -90,7 +98,7 @@ export default function Navbar() {
 
         {/* Desktop Navigation Links */}
         <nav className="hidden items-center gap-1 md:flex lg:gap-2">
-          {links.map((link) => {
+          {visibleLinks.map((link) => {
             const isActive = pathname === link.href;
             return (
               <Link
@@ -113,10 +121,8 @@ export default function Navbar() {
 
         {/* Right Action Stack */}
         <div className="flex items-center gap-2 sm:gap-3">
-          {/* Theme Toggle */}
           <ModeToggle />
 
-          {/* User Authentication Status */}
           {isPending ? (
             <Button variant="outline" size="sm" disabled className="h-9 gap-2 text-xs">
               <Spinner className="h-3.5 w-3.5" />
@@ -161,7 +167,7 @@ export default function Navbar() {
                       <span>My Books</span>
                     </DropdownMenuItem>
                   </Link>
-                  <Link href="/borrowed-books">
+                  <Link href="/my-borrows">
                     <DropdownMenuItem className="cursor-pointer">
                       <BookmarkCheck className="mr-2 h-4 w-4" />
                       <span>My Borrows</span>
@@ -180,13 +186,13 @@ export default function Navbar() {
               </DropdownMenuContent>
             </DropdownMenu>
           ) : (
-            <div className="hidden items-center gap-2 sm:flex">
-              <Link href="/login">
+            <div className="flex items-center gap-2">
+              <Link href="/sign-in">
                 <Button variant="ghost" size="sm" className="h-9 px-3 text-xs">
                   Login
                 </Button>
               </Link>
-              <Link href="/signup">
+              <Link href="/sign-up">
                 <Button size="sm" className="h-9 bg-primary px-3 text-xs text-primary-foreground hover:bg-primary/90">
                   Sign Up
                 </Button>
@@ -194,7 +200,7 @@ export default function Navbar() {
             </div>
           )}
 
-          {/* Mobile Menu Trigger (Hamburger) */}
+          {/* Mobile Menu Drawer */}
           <div className="md:hidden">
             <Sheet open={mobileOpen} onOpenChange={setMobileOpen}>
               <SheetTrigger
@@ -216,9 +222,9 @@ export default function Navbar() {
                     </SheetTitle>
                   </SheetHeader>
 
-                  {/* Mobile Navigation List */}
+                  {/* Filtered Mobile Links */}
                   <div className="flex flex-col space-y-1">
-                    {links.map((link) => {
+                    {visibleLinks.map((link) => {
                       const isActive = pathname === link.href;
                       const Icon = link.icon;
                       return (
@@ -276,12 +282,12 @@ export default function Navbar() {
                     </div>
                   ) : (
                     <div className="flex flex-col gap-2">
-                      <Link href="/login" onClick={() => setMobileOpen(false)}>
+                      <Link href="/sign-in" onClick={() => setMobileOpen(false)}>
                         <Button variant="outline" className="w-full text-xs">
                           Login
                         </Button>
                       </Link>
-                      <Link href="/signup" onClick={() => setMobileOpen(false)}>
+                      <Link href="/sign-up" onClick={() => setMobileOpen(false)}>
                         <Button className="w-full bg-primary text-xs text-primary-foreground hover:bg-primary/90">
                           Sign Up
                         </Button>
