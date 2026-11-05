@@ -11,6 +11,7 @@ export interface IBorrowedItem {
   status: "borrowed" | "returned";
   bookDetails?: TBook;
 }
+
 export async function addBook(book: TBook): Promise<IResponse> {
   return await postPromise<TBook>("/add-book", "POST", book, "Failed to contribute book");
 }
@@ -59,3 +60,14 @@ export async function deleteBook(id: string): Promise<IResponse> {
   );
 }
 
+export async function updateBook(
+  id: string,
+  data: TBook
+): Promise<IResponse> {
+  return await postPromise<TBook>(
+    `/edit-book/${id}`,
+    "PUT",
+    data,
+    "Failed to update book"
+  );
+}

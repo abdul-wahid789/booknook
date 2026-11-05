@@ -238,7 +238,7 @@ export default function MyBooksPage() {
                         {/* Action Buttons */}
                         <td className="py-4 px-6 text-right">
                           <div className="inline-flex items-center gap-2">
-                            <Link href={`/books/${book._id}/edit`}>
+                            <Link href={`/my-books/${book._id}/edit`}>
                               <Button
                                 variant="outline"
                                 size="sm"
