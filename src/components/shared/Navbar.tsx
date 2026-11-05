@@ -17,6 +17,7 @@ const Navbar = () => {
         { name: "All Books", href: "/all-books" },
         { name: "Add Book", href: "/add-book" },
         { name: "My Book", href: "/my-books" },
+        { name: "My Borrow", href: "/my-borrows" },
     ]
 
     const { data, isPending } = useSession()

@@ -1,7 +1,9 @@
 import AllBooksGrid from '@/components/all-books/AllBooksGrid';
-import React from 'react';
+import BooksList from '@/components/all-books/BooksList';
+import React, { Suspense } from 'react';
 
 const page = () => {
+
 
     return (
         <div className="min-h-screen w-full bg-background py-14 px-4 sm:px-6 lg:px-8">
@@ -13,7 +15,9 @@ const page = () => {
                     <p className='text-muted-foreground'>Good books, shared by good people. Browse the shelves and borrow a story for a few days.</p>
                 </div>
 
-               <AllBooksGrid />
+                <Suspense fallback={'loadingg.....'}>
+                    <BooksList />
+                </Suspense>
 
             </div>
         </div>

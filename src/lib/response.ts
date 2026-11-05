@@ -2,14 +2,24 @@ import { TMethod, IResponse } from "@/schemas/server";
 
 const server_url = process.env.NEXT_PUBLIC_SERVER_URL;
 
-export async function getPromise<T>(url: string, errorMessage: string = "Something went wrong"): Promise<T | string> {
+export async function getPromise(url: string, errorMessage: string = "Something went wrong"): Promise<IResponse> {
+
     try {
         const response = await fetch(`${server_url}${url}`);
-        return await response.json() as T;
-    } catch (error) {
-        return (errorMessage + ": " + String(error));
+        try {
+            const resData = await response.json()
+            if (resData.error) {
+                return {data: [],  msg: resData.msg, error: true }
+            }
+            return resData;
+        } catch {
+            return {data: [],  msg: 'JSON error', error: true }
+        }
+    } catch {
+        return {data: [],  msg: 'Server Error', error: true };
     }
 }
+
 export async function postPromise<T>(url: string,
     action: TMethod,
     data: T,
@@ -29,10 +39,10 @@ export async function postPromise<T>(url: string,
 
         }
         catch {
-            return { msg: "Invalid JSON response from server", error: true }
+            return { data: [], msg: "Invalid JSON response from server", error: true }
         }
     }
     catch (error) {
-        return { msg: errorMessage + ": " + String(error), error: true };
+        return { data: [], msg: errorMessage + ": " + String(error), error: true };
     }
 }

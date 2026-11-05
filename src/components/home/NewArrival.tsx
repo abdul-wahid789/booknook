@@ -1,7 +1,15 @@
 import React from 'react';
 import BookCard from '../shared/BookCard';
+import { getNewBooks } from '@/lib/bookOperation';
+import { IResponse } from '@/schemas/server';
 
-const NewArrival = () => {
+const NewArrival = async () => {
+    const resData: IResponse = await getNewBooks()
+
+    if (resData.error) {
+        console.log(resData.msg)
+    }
+
     return (
         <section className='max-w-7xl mx-auto mt-18 space-y-10'>
             <div className='space-y-2'>
@@ -10,16 +18,18 @@ const NewArrival = () => {
                 <p className='text-muted-foreground'>Six recent additions. Which one will you open first?</p>
             </div>
 
+            {
+                resData.error ? (
+                    <p className='bg-destructive'>{resData.msg}</p>
 
+                ) : (
+                    <div className='grid grid-cols-6 gap-5'>
+                        {
+                            resData.data.map(book=><BookCard key={book._id} book={book}/>)
+                        }
+                    </div>)
 
-            <div className='grid grid-cols-6 gap-5'>
-                <BookCard />
-                <BookCard />
-                <BookCard />
-                <BookCard />
-                <BookCard />
-                <BookCard />
-            </div>
+            }
         </section>
     );
 };

@@ -32,7 +32,7 @@ export function HowItWorks() {
                 </div>
 
 
-                =        <div className="grid grid-cols-1 gap-6 md:grid-cols-3 mt-10 max-w-5xl mx-auto">
+                <div className="grid grid-cols-1 gap-6 md:grid-cols-3 mt-10 max-w-5xl mx-auto">
                     {steps.map((item) => {
                         const Icon = item.icon;
                         return (
