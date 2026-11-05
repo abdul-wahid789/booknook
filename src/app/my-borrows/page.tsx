@@ -60,13 +60,17 @@ export default function BorrowedBooksPage() {
     };
   }, [session, isPending]);
 
-  // Dynamic due status calculator
+  // Dynamic due status calculator mapped to design system variants
   const getDueStatus = (dueDateStr: string | Date) => {
-    const targetDate = typeof dueDateStr === "string" ? parseISO(dueDateStr) : new Date(dueDateStr);
+    const targetDate =
+      typeof dueDateStr === "string" ? parseISO(dueDateStr) : new Date(dueDateStr);
     const diff = differenceInCalendarDays(targetDate, new Date());
 
     if (diff < 0) {
-      return { label: `Overdue by ${Math.abs(diff)}d`, variant: "destructive" as const };
+      return {
+        label: `Overdue by ${Math.abs(diff)}d`,
+        variant: "destructive" as const,
+      };
     }
     if (diff === 0) {
       return { label: "Due today", variant: "warning" as const };
@@ -108,7 +112,7 @@ export default function BorrowedBooksPage() {
         {/* Header Section */}
         <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
           <div className="space-y-2">
-            <p className="text-xs font-bold tracking-wider text-muted-foreground uppercase">
+            <p className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
               A little time. A whole new world.
             </p>
             <h1 className="font-heading text-4xl font-normal tracking-tight text-primary sm:text-5xl">
@@ -135,7 +139,7 @@ export default function BorrowedBooksPage() {
           {/* Card 1: Currently Reading */}
           <Card className="rounded-xl border border-border/70 bg-card p-5 shadow-2xs">
             <div className="flex items-start gap-3.5">
-              <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-muted text-foreground">
+              <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-secondary text-secondary-foreground">
                 <BookOpen className="h-4 w-4 stroke-[1.75]" />
               </div>
               <div className="space-y-1">
@@ -152,20 +156,20 @@ export default function BorrowedBooksPage() {
             </div>
           </Card>
 
-          {/* Card 2: Due Today or Overdue */}
-          <Card className="rounded-xl border border-amber-200/80 bg-[#fef5e7] p-5 shadow-2xs dark:border-amber-900/40 dark:bg-[#2a2215]">
+          {/* Card 2: Due Today or Overdue (Warm Ochre / Amber Accent) */}
+          <Card className="rounded-xl border border-accent/40 bg-accent/15 p-5 shadow-2xs">
             <div className="flex items-start gap-3.5">
-              <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-amber-100 text-amber-900 dark:bg-amber-900/50 dark:text-amber-200">
+              <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-accent/25 text-accent-foreground">
                 <Clock className="h-4 w-4 stroke-[1.75]" />
               </div>
               <div className="space-y-1">
-                <p className="text-[11px] font-medium text-amber-900/80 dark:text-amber-200/80">
+                <p className="text-[11px] font-medium text-accent-foreground/80">
                   Needs attention
                 </p>
-                <h3 className="font-heading text-2xl font-normal text-amber-950 dark:text-amber-100">
+                <h3 className="font-heading text-2xl font-normal text-accent-foreground">
                   {dueTodayBooks.length} {dueTodayBooks.length === 1 ? "book" : "books"}
                 </h3>
-                <p className="max-w-[170px] truncate text-[11px] text-amber-900/70 dark:text-amber-300/70">
+                <p className="max-w-[170px] truncate text-[11px] text-accent-foreground/75">
                   {dueTodayBooks.length > 0
                     ? dueTodayBooks
                         .map((b) => b.bookDetails?.title || "Book")
@@ -179,7 +183,7 @@ export default function BorrowedBooksPage() {
           {/* Card 3: Today's Date */}
           <Card className="rounded-xl border border-border/70 bg-card p-5 shadow-2xs">
             <div className="flex items-start gap-3.5">
-              <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-muted text-foreground">
+              <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-muted text-muted-foreground">
                 <Clock className="h-4 w-4 stroke-[1.75]" />
               </div>
               <div className="space-y-1">
@@ -202,7 +206,7 @@ export default function BorrowedBooksPage() {
           <div className="overflow-x-auto">
             <table className="w-full border-collapse text-left">
               <thead>
-                <tr className="border-b border-border/70 bg-muted/40 text-[11px] font-bold tracking-wider text-muted-foreground uppercase">
+                <tr className="border-b border-border/70 bg-muted/40 text-[11px] font-bold uppercase tracking-wider text-muted-foreground">
                   <th className="px-6 py-3.5">Book / Author</th>
                   <th className="px-4 py-3.5">Borrow Date</th>
                   <th className="px-4 py-3.5">Return Date</th>
@@ -238,12 +242,12 @@ export default function BorrowedBooksPage() {
                     return (
                       <tr
                         key={item._id}
-                        className="group transition-colors hover:bg-muted/20"
+                        className="group transition-colors hover:bg-muted/30"
                       >
                         {/* Book Title & Cover */}
                         <td className="px-6 py-4">
                           <div className="flex items-center gap-4">
-                            <div className="relative aspect-[2/3] h-16 w-11 shrink-0 overflow-hidden rounded-xs border border-border/70 bg-[#f4ece3] p-1 shadow-2xs dark:bg-[#182126]">
+                            <div className="relative aspect-[2/3] h-16 w-11 shrink-0 overflow-hidden rounded-xs border border-border/70 bg-muted/50 p-1 shadow-2xs">
                               {book?.image ? (
                                 <Image
                                   src={book.image}
@@ -286,17 +290,17 @@ export default function BorrowedBooksPage() {
                         {/* Due Status Pill */}
                         <td className="px-4 py-4">
                           {status.variant === "destructive" ? (
-                            <span className="inline-flex items-center gap-1.5 rounded-sm bg-destructive/10 px-2 py-0.5 text-[11px] font-medium text-destructive">
+                            <span className="inline-flex items-center gap-1.5 rounded-sm border border-destructive/20 bg-destructive/10 px-2 py-0.5 text-[11px] font-medium text-destructive">
                               <AlertTriangle className="h-3 w-3 stroke-[2.5]" />
                               {status.label}
                             </span>
                           ) : status.variant === "warning" ? (
-                            <span className="inline-flex items-center gap-1.5 rounded-sm bg-amber-100/80 px-2 py-0.5 text-[11px] font-medium text-amber-900 dark:bg-amber-950/60 dark:text-amber-300">
+                            <span className="inline-flex items-center gap-1.5 rounded-sm border border-accent/40 bg-accent/20 px-2 py-0.5 text-[11px] font-medium text-accent-foreground">
                               <Clock className="h-3 w-3 stroke-[2.5]" />
                               {status.label}
                             </span>
                           ) : (
-                            <span className="inline-flex items-center gap-1.5 rounded-sm bg-emerald-50 px-2 py-0.5 text-[11px] font-medium text-emerald-800 dark:bg-emerald-950/60 dark:text-emerald-300">
+                            <span className="inline-flex items-center gap-1.5 rounded-sm border border-secondary/40 bg-secondary px-2 py-0.5 text-[11px] font-medium text-secondary-foreground">
                               <Check className="h-3 w-3 stroke-[2.5]" />
                               {status.label}
                             </span>
@@ -311,11 +315,11 @@ export default function BorrowedBooksPage() {
                             size="sm"
                             disabled={isReturning}
                             onClick={() => handleReturnBook(item._id, book?.title)}
-                            className="h-8 border-border px-3 text-xs font-medium text-foreground hover:bg-muted"
+                            className="h-8 border-border bg-card px-3 text-xs font-medium text-foreground hover:bg-muted hover:text-primary"
                           >
                             {isReturning ? (
                               <>
-                                <Loader2 className="mr-1.5 h-3 w-3 animate-spin" />
+                                <Loader2 className="mr-1.5 h-3 w-3 animate-spin text-primary" />
                                 Returning...
                               </>
                             ) : (

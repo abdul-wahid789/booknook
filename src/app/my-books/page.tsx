@@ -3,68 +3,97 @@
 import * as React from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { Check, Library, Plus } from "lucide-react";
-// import { toast } from "sonner";
+import { format } from "date-fns";
+import {
+  BookOpen,
+  Check,
+  Library,
+  Loader2,
+  Plus,
+  Trash2,
+  Clock,
+} from "lucide-react";
 
 import { Button } from "@/components/ui/button";
-
-interface SharedBook {
-  id: string;
-  title: string;
-  authorName: string;
-  category: string;
-  dateAdded: string;
-  status: "Available" | "Borrowed";
-  image: string;
-}
-
-const INITIAL_SHARED_BOOKS: SharedBook[] = [
-  {
-    id: "1",
-    title: "The Creative Act",
-    authorName: "Rick Rubin",
-    category: "Others",
-    dateAdded: "03 Nov 2026",
-    status: "Available",
-    image:
-      "https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?auto=format&fit=crop&q=80&w=400",
-  },
-  {
-    id: "2",
-    title: "Braiding Sweetgrass",
-    authorName: "Robin Wall Kimmerer",
-    category: "Science",
-    dateAdded: "31 Oct 2026",
-    status: "Available",
-    image:
-      "https://images.unsplash.com/photo-1497633762265-9d179a990aa6?auto=format&fit=crop&q=80&w=400",
-  },
-  {
-    id: "3",
-    title: "The Little Prince",
-    authorName: "Antoine de Saint-Exupéry",
-    category: "Kids",
-    dateAdded: "29 Oct 2026",
-    status: "Available",
-    image:
-      "https://images.unsplash.com/photo-1589829085413-56de8ae18c73?auto=format&fit=crop&q=80&w=400",
-  },
-];
+import { useSession } from "@/lib/auth-client";
+import { getMyBooks, deleteBook } from "@/lib/bookOperation";
+import { errorToast, successToast } from "@/lib/toasts";
+import { TBook } from "@/schemas/book";
+import DeleteBookModal from "@/components/my-books/DeleteBookModal";
 
 export default function MyBooksPage() {
-  const [books, setBooks] = React.useState<SharedBook[]>(INITIAL_SHARED_BOOKS);
+  const { data: session, isPending } = useSession();
+  const [books, setBooks] = React.useState<TBook[]>([]);
+  const [isLoading, setIsLoading] = React.useState(true);
+  const [deletingId, setDeletingId] = React.useState<string | null>(null);
+  const [selectedBookForDelete, setSelectedBookForDelete] =
+    React.useState<TBook | null>(null);
 
-  const currentUserName = "Abdul Wahid";
+  // Fetch contributed books for the logged-in user
+  React.useEffect(() => {
+    let isMounted = true;
 
-  const handleDelete = (id: string, title: string) => {
-    setBooks((prev) => prev.filter((b) => b.id !== id));
-    toast.success(`"${title}" has been removed from your shelf.`);
+    async function fetchUserBooks() {
+      if (!session?.user?.email) {
+        if (!isPending) setIsLoading(false);
+        return;
+      }
+
+      try {
+        setIsLoading(true);
+        const res = await getMyBooks(session.user.email);
+        if (isMounted) {
+          if (!res.error && Array.isArray(res.data)) {
+            setBooks(res.data);
+          } else {
+            setBooks([]);
+          }
+        }
+      } catch (err) {
+        console.error("Failed to load user books:", err);
+      } finally {
+        if (isMounted) setIsLoading(false);
+      }
+    }
+
+    fetchUserBooks();
+
+    return () => {
+      isMounted = false;
+    };
+  }, [session, isPending]);
+
+  const confirmDeleteAction = async () => {
+    if (!selectedBookForDelete?._id) return;
+
+    try {
+      setDeletingId(selectedBookForDelete._id);
+      const res = await deleteBook(selectedBookForDelete._id);
+
+      if (res.error) {
+        errorToast(res.msg || "Failed to delete book.");
+        return;
+      }
+
+      setBooks((prev) =>
+        prev.filter((b) => b._id !== selectedBookForDelete._id)
+      );
+      successToast(
+        res.msg ||
+          `"${selectedBookForDelete.title}" has been removed from your shelf.`
+      );
+      setSelectedBookForDelete(null);
+    } catch (error) {
+      console.error(error);
+      errorToast("Unable to remove book. Please try again.");
+    } finally {
+      setDeletingId(null);
+    }
   };
 
   return (
     <div className="min-h-screen w-full bg-background py-14 px-4 sm:px-6 lg:px-8">
       <div className="mx-auto max-w-5xl space-y-8">
-
         {/* Top Header Section */}
         <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
           <div className="space-y-2">
@@ -75,12 +104,13 @@ export default function MyBooksPage() {
               Stories you&apos;ve shared.
             </h1>
             <p className="text-sm text-muted-foreground">
-              A little shelf with a lot to give. Manage the books you&apos;ve added to BookNook.
+              A little shelf with a lot to give. Manage the books you&apos;ve
+              added to BookNook.
             </p>
           </div>
 
           <Link href="/add-book" className="shrink-0">
-            <Button className="h-10 rounded-lg bg-primary px-4 text-xs font-semibold text-primary-foreground hover:bg-primary/90">
+            <Button className="h-10 rounded-lg bg-primary px-4 text-xs font-semibold text-primary-foreground shadow-sm hover:bg-primary/90">
               <span>Add Book</span>
               <Plus className="ml-1.5 h-3.5 w-3.5" />
             </Button>
@@ -93,110 +123,168 @@ export default function MyBooksPage() {
             <h2 className="font-heading text-lg font-medium text-foreground">
               My Books
             </h2>
-            <span className="inline-flex items-center gap-1 rounded-sm bg-secondary px-2 py-0.5 text-xs font-medium text-secondary-foreground">
+            <span className="inline-flex items-center gap-1 rounded-sm border border-secondary/40 bg-secondary px-2 py-0.5 text-xs font-medium text-secondary-foreground">
               <Check className="h-3 w-3 stroke-[2.5]" />
-              {books.length} books
+              {books.length} {books.length === 1 ? "book" : "books"}
             </span>
           </div>
 
           <p className="text-xs text-muted-foreground">
-            Only books shared by {currentUserName}
+            {session?.user?.name
+              ? `Shared by ${session.user.name}`
+              : "Sign in to see your contributed books"}
           </p>
         </div>
 
         {/* Shared Books Table Container */}
         <div className="overflow-hidden rounded-xl border border-border/70 bg-card shadow-2xs">
           <div className="overflow-x-auto">
-            <table className="w-full text-left border-collapse">
-              {/* Table Header */}
+            <table className="w-full border-collapse text-left">
               <thead>
                 <tr className="border-b border-border/70 bg-muted/40 text-[11px] font-bold uppercase tracking-wider text-muted-foreground">
                   <th className="py-3.5 px-6">Book / Author</th>
                   <th className="py-3.5 px-4">Category</th>
                   <th className="py-3.5 px-4">Date Added</th>
-                  <th className="py-3.5 px-4">Status</th>
+                  <th className="py-3.5 px-4">Copies / Status</th>
                   <th className="py-3.5 px-6 text-right">Actions</th>
                 </tr>
               </thead>
 
-              {/* Table Rows */}
               <tbody className="divide-y divide-border/60 text-xs">
-                {books.map((book) => (
-                  <tr
-                    key={book.id}
-                    className="group transition-colors hover:bg-muted/20"
-                  >
-                    {/* Book / Author & Thumbnail */}
-                    <td className="py-4 px-6">
-                      <div className="flex items-center gap-4">
-                        <div className="relative aspect-[2/3] h-16 w-11 shrink-0 overflow-hidden rounded-xs border border-border/70 bg-[#f4ece3] p-1 shadow-2xs dark:bg-[#182126]">
-                          <Image
-                            src={book.image}
-                            alt={book.title}
-                            fill
-                            className="object-cover"
-                            unoptimized
-                          />
-                        </div>
-
-                        <div className="space-y-1">
-                          <Link
-                            href={`/books/${book.id}`}
-                            className="font-heading text-sm font-medium text-foreground hover:text-primary transition-colors block"
-                          >
-                            {book.title}
-                          </Link>
-                          <p className="text-muted-foreground">
-                            {book.authorName}
-                          </p>
-                        </div>
-                      </div>
-                    </td>
-
-                    {/* Category */}
-                    <td className="py-4 px-4 text-muted-foreground">
-                      {book.category}
-                    </td>
-
-                    {/* Date Added */}
-                    <td className="py-4 px-4 text-muted-foreground">
-                      {book.dateAdded}
-                    </td>
-
-                    {/* Status */}
-                    <td className="py-4 px-4">
-                      <span className="inline-flex items-center gap-1.5 rounded-sm bg-emerald-50 px-2 py-0.5 text-[11px] font-medium text-emerald-800 dark:bg-emerald-950/60 dark:text-emerald-300">
-                        <Check className="h-3 w-3 stroke-[2.5]" />
-                        {book.status}
-                      </span>
-                    </td>
-
-                    {/* Action Buttons */}
-                    <td className="py-4 px-6 text-right">
-                      <div className="inline-flex items-center gap-2">
-                        <Link href={`/books/${book.id}/edit`}>
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            className="h-8 border-border px-3 text-xs font-medium text-foreground hover:bg-muted"
-                          >
-                            Edit
-                          </Button>
-                        </Link>
-
-                        <Button
-                          type="button"
-                          variant="outline"
-                          size="sm"
-                          onClick={() => handleDelete(book.id, book.title)}
-                          className="h-8 border-border px-3 text-xs font-medium text-destructive hover:bg-destructive/10 hover:text-destructive"
-                        >
-                          Delete
-                        </Button>
+                {isLoading ? (
+                  <tr>
+                    <td
+                      colSpan={5}
+                      className="py-12 text-center text-muted-foreground"
+                    >
+                      <div className="flex items-center justify-center gap-2">
+                        <Loader2 className="h-4 w-4 animate-spin text-primary" />
+                        <span>Gathering your books...</span>
                       </div>
                     </td>
                   </tr>
-                ))}
+                ) : books.length > 0 ? (
+                  books.map((book) => {
+                    const isDeleting = deletingId === book._id;
+                    const isAvailable = (book.totalCopies ?? 0) > 0;
+
+                    const dateAdded = book.createdAt
+                      ? format(new Date(book.createdAt), "dd MMM yyyy")
+                      : "Recently";
+
+                    return (
+                      <tr
+                        key={book._id}
+                        className="group transition-colors hover:bg-muted/30"
+                      >
+                        {/* Book / Author & Thumbnail */}
+                        <td className="py-4 px-6">
+                          <div className="flex items-center gap-4">
+                            <div className="relative aspect-[2/3] h-16 w-11 shrink-0 overflow-hidden rounded-xs border border-border/70 bg-muted/50 p-1 shadow-2xs">
+                              {book.image ? (
+                                <Image
+                                  src={book.image}
+                                  alt={book.title}
+                                  fill
+                                  className="object-cover"
+                                  unoptimized
+                                />
+                              ) : (
+                                <div className="flex h-full w-full items-center justify-center bg-muted text-muted-foreground">
+                                  <BookOpen className="h-4 w-4" />
+                                </div>
+                              )}
+                            </div>
+
+                            <div className="space-y-1">
+                              <Link
+                                href={`/books/${book._id}`}
+                                className="block font-heading text-sm font-medium text-foreground transition-colors hover:text-primary"
+                              >
+                                {book.title}
+                              </Link>
+                              <p className="text-muted-foreground">
+                                {book.authorName}
+                              </p>
+                            </div>
+                          </div>
+                        </td>
+
+                        {/* Category */}
+                        <td className="py-4 px-4 text-muted-foreground">
+                          {book.category}
+                        </td>
+
+                        {/* Date Added */}
+                        <td className="py-4 px-4 text-muted-foreground">
+                          {dateAdded}
+                        </td>
+
+                        {/* Status / Stock */}
+                        <td className="py-4 px-4">
+                          {isAvailable ? (
+                            <span className="inline-flex items-center gap-1.5 rounded-sm border border-secondary/40 bg-secondary px-2 py-0.5 text-[11px] font-medium text-secondary-foreground">
+                              <Check className="h-3 w-3 stroke-[2.5]" />
+                              Available ({book.totalCopies})
+                            </span>
+                          ) : (
+                            <span className="inline-flex items-center gap-1.5 rounded-sm border border-accent/40 bg-accent/20 px-2 py-0.5 text-[11px] font-medium text-accent-foreground">
+                              <Clock className="h-3 w-3 stroke-[2.5]" />
+                              Borrowed out
+                            </span>
+                          )}
+                        </td>
+
+                        {/* Action Buttons */}
+                        <td className="py-4 px-6 text-right">
+                          <div className="inline-flex items-center gap-2">
+                            <Link href={`/books/${book._id}/edit`}>
+                              <Button
+                                variant="outline"
+                                size="sm"
+                                className="h-8 border-border bg-card px-3 text-xs font-medium text-foreground hover:bg-muted hover:text-primary"
+                              >
+                                Edit
+                              </Button>
+                            </Link>
+
+                            <Button
+                              type="button"
+                              variant="outline"
+                              size="sm"
+                              disabled={isDeleting}
+                              onClick={() => setSelectedBookForDelete(book)}
+                              className="h-8 border-border bg-card px-3 text-xs font-medium text-destructive hover:bg-destructive/10 hover:text-destructive"
+                            >
+                              {isDeleting ? (
+                                <>
+                                  <Loader2 className="mr-1 h-3 w-3 animate-spin" />
+                                  Deleting...
+                                </>
+                              ) : (
+                                <>
+                                  <Trash2 className="mr-1 h-3 w-3" />
+                                  Delete
+                                </>
+                              )}
+                            </Button>
+                          </div>
+                        </td>
+                      </tr>
+                    );
+                  })
+                ) : (
+                  <tr>
+                    <td
+                      colSpan={5}
+                      className="py-12 text-center text-sm text-muted-foreground"
+                    >
+                      {!session?.user
+                        ? "Please sign in to view and manage your books."
+                        : "You haven't contributed any books to the library yet."}
+                    </td>
+                  </tr>
+                )}
               </tbody>
             </table>
           </div>
@@ -212,8 +300,16 @@ export default function MyBooksPage() {
           <Library className="h-4 w-4 shrink-0 text-muted-foreground" />
           <p>Every book you share makes this little library a little richer.</p>
         </div>
-
       </div>
+
+      {/* Delete Confirmation Modal */}
+      <DeleteBookModal
+        book={selectedBookForDelete}
+        isOpen={Boolean(selectedBookForDelete)}
+        isDeleting={Boolean(deletingId)}
+        onClose={() => setSelectedBookForDelete(null)}
+        onConfirm={confirmDeleteAction}
+      />
     </div>
   );
 }

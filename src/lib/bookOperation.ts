@@ -2,7 +2,15 @@ import { TBook } from "@/schemas/book";
 import { IResponse } from "@/schemas/server";
 import { getPromise, postPromise } from "./response";
 import { TBorrowInput } from "@/schemas/borrow";
-
+export interface IBorrowedItem {
+  _id: string;
+  bookId: string;
+  userEmail: string;
+  borrowedAt: string | Date;
+  returnDueDate: string | Date;
+  status: "borrowed" | "returned";
+  bookDetails?: TBook;
+}
 export async function addBook(book: TBook): Promise<IResponse> {
   return await postPromise<TBook>("/add-book", "POST", book, "Failed to contribute book");
 }
@@ -37,3 +45,17 @@ export async function returnBook(borrowId: string): Promise<IResponse> {
     "Failed to return book"
   );
 }
+
+export async function getMyBooks(userEmail: string): Promise<IResponse> {
+  return await getPromise(`/my-books/${encodeURIComponent(userEmail)}`);
+}
+
+export async function deleteBook(id: string): Promise<IResponse> {
+  return await postPromise<undefined>(
+    `/book/${id}`,
+    "DELETE",
+    undefined,
+    "Failed to delete book"
+  );
+}
+
