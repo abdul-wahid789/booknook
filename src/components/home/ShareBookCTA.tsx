@@ -22,7 +22,7 @@ export function ShareBookCTA() {
                             <Badge variant={"secondary"} className="px-5 py-3 ">
                                 <Sparkles className="h-3.5 w-3.5 text-accent" />
                                 <span>Keep the library alive</span>
-                                </Badge>
+                            </Badge>
 
                             <h2 className="font-heading text-3xl font-medium text-card-foreground sm:text-4xl mt-5">
                                 Have a book sitting on your shelf?
@@ -36,6 +36,7 @@ export function ShareBookCTA() {
                         {/* Actions Column */}
                         <div className="flex shrink-0 flex-col gap-3 sm:flex-row w-full sm:w-auto">
                             <Button
+                                nativeButton={false}
                                 render={<Link href="/add-book" />}
                                 className="h-11 rounded-lg bg-primary px-6 text-sm font-medium text-primary-foreground shadow-sm hover:bg-primary/90 transition-colors w-full sm:w-auto justify-center"
                             >
