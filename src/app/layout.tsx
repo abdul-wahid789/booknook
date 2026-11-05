@@ -1,44 +1,52 @@
 import type { Metadata } from "next";
-import { Inter, Newsreader, Libre_Baskerville } from "next/font/google";
+import { Inter, Libre_Baskerville } from "next/font/google";
 import "./globals.css";
 import { cn } from "@/lib/utils";
 import Navbar from "@/components/shared/Navbar";
 import Footer from "@/components/shared/Footer";
-import { Toaster } from "sonner";
+import { Toaster } from "@/components/ui/sonner";
+import { ThemeProvider } from "@/components/shared/ThemeProvider";
 
 const inter = Inter({
   subsets: ["latin"],
   variable: "--font-sans",
 });
 
-// const newsreader = Newsreader({
-//   subsets: ["latin"],
-//   style: ["normal", "italic"],
-//   variable: "--font-heading",
-// });
-
 const libreBaskerville = Libre_Baskerville({
   subsets: ["latin"],
+  weight: ["400", "700"],
   style: ["normal", "italic"],
   variable: "--font-heading",
 });
 
 export const metadata: Metadata = {
   title: "BookNook",
-  description: "Book rental website. Where people can rent books and also added their books in the website",
+  description: "Book rental website. Where people can rent books and share their stories.",
 };
 
-export default function RootLayout({ children }: LayoutProps<"/">) {
+export default function RootLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   return (
     <html
       lang="en"
-      className={cn("h-full", `${inter.variable} ${libreBaskerville.variable}`)}
+      suppressHydrationWarning
+      className={cn("h-full", inter.variable, libreBaskerville.variable)}
     >
-      <body className="min-h-full flex flex-col w-full">
-        <Navbar />
-        {children}
-        <Footer />
-         <Toaster />
+      <body className="min-h-full flex flex-col w-full bg-background text-foreground antialiased">
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange
+        >
+          <Navbar />
+          <main className="flex-1">{children}</main>
+          <Footer />
+          <Toaster richColors position="bottom-right" />
+        </ThemeProvider>
       </body>
     </html>
   );
