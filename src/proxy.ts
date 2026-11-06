@@ -20,7 +20,7 @@ export function proxy(request: NextRequest) {
   const isProtected = protectedRoutes.some((route) => route.test(pathname));
 
   if (isProtected && !sessionCookie) {
-    const signInUrl = new URL('/login', request.url);
+    const signInUrl = new URL('/sign-in', request.url);
     const targetUrl = `${pathname}${search}`;
     signInUrl.searchParams.set('callbackUrl', targetUrl);
 

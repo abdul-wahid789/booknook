@@ -24,32 +24,27 @@ export default function AllBooksGrid({ initialBooks = [] }: AllBooksGridProps) {
   const [selectedCategory, setSelectedCategory] = useState("All");
   const [sortBy, setSortBy] = useState<"newest" | "title">("newest");
 
-  // Memoized filter and sort pass
-  const filteredBooks = useMemo(() => {
-    const query = searchQuery.trim().toLowerCase();
+  const query = searchQuery.trim().toLowerCase();
 
-    return [...initialBooks]
-      .filter((book) => {
-        const matchesSearch =
-          !query ||
-          book.title?.toLowerCase().includes(query) ||
-          book.authorName?.toLowerCase().includes(query);
-
-        const matchesCategory =
-          selectedCategory === "All" ||
-          book.category?.toLowerCase() === selectedCategory.toLowerCase();
-
-        return matchesSearch && matchesCategory;
-      })
-      .sort((a, b) => {
-        if (sortBy === "title") {
-          return (a.title || "").localeCompare(b.title || "");
-        }
-        const dateA = a.createdAt ? new Date(a.createdAt).getTime() : 0;
-        const dateB = b.createdAt ? new Date(b.createdAt).getTime() : 0;
-        return dateB - dateA;
-      });
-  }, [initialBooks, searchQuery, selectedCategory, sortBy]);
+  const filteredBooks = [...initialBooks]
+    .filter((book) => {
+      const matchesSearch =
+        !query ||
+        book.title?.toLowerCase().includes(query) ||
+        book.authorName?.toLowerCase().includes(query);
+      const matchesCategory =
+        selectedCategory === "All" ||
+        book.category?.toLowerCase() === selectedCategory.toLowerCase();
+      return matchesSearch && matchesCategory;
+    })
+    .sort((a, b) => {
+      if (sortBy === "title") {
+        return (a.title || "").localeCompare(b.title || "");
+      }
+      const dateA = a.createdAt ? new Date(a.createdAt).getTime() : 0;
+      const dateB = b.createdAt ? new Date(b.createdAt).getTime() : 0;
+      return dateB - dateA;
+    });
 
   const handleResetFilters = () => {
     setSearchQuery("");
@@ -61,9 +56,9 @@ export default function AllBooksGrid({ initialBooks = [] }: AllBooksGridProps) {
 
   return (
     <div className="space-y-8">
-      {/* Search & Filter Toolbar */}
-      <div className="flex flex-col gap-3 my-10 rounded-2xl border border-border/80 bg-card p-2 sm:p-2.5 shadow-2xs sm:flex-row sm:items-center sm:justify-between sm:gap-4">
-        {/* Search Input */}
+      {/* action bar */}
+      <div className="flex flex-col gap-3 rounded-2xl border border-border/80 bg-card p-2 sm:p-2.5 shadow-2xs sm:flex-row sm:items-center sm:justify-between sm:gap-4">
+        {/* search */}
         <div className="relative flex-1">
           <Search className="absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
           <Input
@@ -87,7 +82,7 @@ export default function AllBooksGrid({ initialBooks = [] }: AllBooksGridProps) {
 
         <div className="hidden h-6 w-px bg-border/80 sm:block" />
 
-        {/* Category Selector */}
+        {/* category */}
         <div className="w-full sm:w-48">
           <Select
             value={selectedCategory}
@@ -109,7 +104,7 @@ export default function AllBooksGrid({ initialBooks = [] }: AllBooksGridProps) {
 
         <div className="hidden h-6 w-px bg-border/80 sm:block" />
 
-        {/* Status Count & Sorting Toggle */}
+        {/*count sorting */}
         <div className="flex items-center justify-between gap-3 px-3 py-1 text-xs text-muted-foreground sm:px-2 sm:py-0">
           <span className="font-mono text-[11px] sm:text-xs">
             {filteredBooks.length} {filteredBooks.length === 1 ? "book" : "books"}
@@ -128,7 +123,11 @@ export default function AllBooksGrid({ initialBooks = [] }: AllBooksGridProps) {
         </div>
       </div>
 
-      {/* Books Display Grid */}
+
+
+
+
+      {/* books grid */}
       {filteredBooks.length > 0 ? (
         <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 md:gap-6">
           {filteredBooks.map((book) => (
@@ -136,7 +135,10 @@ export default function AllBooksGrid({ initialBooks = [] }: AllBooksGridProps) {
           ))}
         </div>
       ) : (
-        /* Empty State */
+
+
+        // empty
+
         <div className="flex flex-col items-center justify-center rounded-2xl border border-dashed border-border/80 bg-card/50 px-4 py-16 text-center">
           <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-muted text-muted-foreground mb-4">
             <Search className="h-5 w-5 stroke-[1.75]" />

@@ -1,25 +1,26 @@
-"use client";
+"use client"
 
-import { useState } from "react";
-import { useRouter } from "next/navigation";
-import { format, addDays, isBefore, startOfToday } from "date-fns";
-import { BookOpen, CalendarIcon, Loader2 } from "lucide-react";
+import { useState } from "react"
+import { useRouter } from "next/navigation"
+import { format, addDays, isBefore, startOfToday } from "date-fns"
+import { BookOpen, CalendarIcon, Loader2 } from "lucide-react"
 
-import { Button } from "@/components/ui/button";
-import { Calendar } from "@/components/ui/calendar";
+import { Button } from "@/components/ui/button"
+import { Calendar } from "@/components/ui/calendar"
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from "@/components/ui/popover";
-import { errorToast, successToast } from "@/lib/toasts";
-import { useSession } from "@/lib/auth-client";
-import { addBorrowBook } from "@/lib/bookOperation";
+} from "@/components/ui/popover"
+import { errorToast, successToast } from "@/lib/toasts"
+import { useSession } from "@/lib/auth-client"
+import { addBorrowBook } from "@/lib/bookOperation"
+import getClientToken from "@/lib/clientToken"
 
 interface BorrowActionProps {
-  bookId?: string;
-  bookTitle: string;
-  isAvailable: boolean;
+  bookId?: string
+  bookTitle: string
+  isAvailable: boolean
 }
 
 export default function BorrowAction({
@@ -27,57 +28,50 @@ export default function BorrowAction({
   bookTitle,
   isAvailable,
 }: BorrowActionProps) {
-  const router = useRouter();
-  const { data: session } = useSession();
-  const [isBorrowing, setIsBorrowing] = useState(false);
+  const router = useRouter()
+  const { data: session } = useSession()
+  const [isBorrowing, setIsBorrowing] = useState(false)
 
-  // Default return due date to 14 days from today
+  // 14 days
   const [returnDueDate, setReturnDueDate] = useState<Date | undefined>(() =>
     addDays(new Date(), 14)
-  );
+  )
 
-  const today = startOfToday();
-  const maxBorrowDate = addDays(today, 30); // Maximum 30-day borrowing window
+  const today = startOfToday()
+  const maxBorrowDate = addDays(today, 30)
 
   async function handleBorrow() {
-    if (!bookId) return;
+    if (!bookId) return
 
     if (!session?.user?.email) {
-      errorToast("Please sign in to borrow books.");
-      router.push("/sign-in");
-      return;
+      errorToast("Please sign in to borrow books.")
+      router.push("/sign-in")
+      return
     }
 
     if (!returnDueDate) {
-      errorToast("Please choose a return date.");
-      return;
+      errorToast("Please choose a return date.")
+      return
     }
 
-    setIsBorrowing(true);
-    try {
-      const res = await addBorrowBook({
-        bookId,
-        userEmail: session.user.email,
-        userName: session.user.name || undefined,
-        returnDueDate: returnDueDate.toISOString(),
-      });
+    setIsBorrowing(true)
+    const token = await getClientToken()
+    console.log(token)
+    const res = await addBorrowBook({
+      bookId,
+      userEmail: session.user.email,
+      userName: session.user.name || undefined,
+      returnDueDate: returnDueDate.toISOString(),
+    }, token)
 
-      if (res.error) {
-        errorToast(res.msg || "Unable to borrow this book.");
-        return;
-      }
-
-      successToast(
-        res.msg || `You borrowed "${bookTitle}"!`,
-        `Return date set for ${format(returnDueDate, "PPP")}.`
-      );
-      router.refresh();
-    } catch (err) {
-      console.error(err);
-      errorToast("Unable to process borrow request.");
-    } finally {
-      setIsBorrowing(false);
+    if (res.error) {
+      errorToast(res.msg)
+      return
     }
+    successToast(res.msg)
+    router.refresh()
+    setIsBorrowing(false)
+
   }
 
   return (
@@ -111,7 +105,7 @@ export default function BorrowAction({
               disabled={(date) =>
                 isBefore(date, addDays(today, 1)) || date > maxBorrowDate
               }
-              initialFocus
+            // initialFocus
             />
           </PopoverContent>
         </Popover>
@@ -123,10 +117,9 @@ export default function BorrowAction({
       {/* CTA Button Row */}
       <div className="flex flex-wrap items-center gap-4">
         <Button
-          type="button"
+          size={"lg"}
           disabled={!isAvailable || isBorrowing || !returnDueDate}
           onClick={handleBorrow}
-          className="h-11 rounded-lg bg-primary px-6 text-xs font-semibold text-primary-foreground shadow-sm hover:bg-primary/90"
         >
           {isBorrowing ? (
             <>
@@ -136,7 +129,7 @@ export default function BorrowAction({
           ) : (
             <>
               <span>Borrow This Book</span>
-              <BookOpen className="ml-2 h-4 w-4 stroke-[2]" />
+              <BookOpen className="ml-2 h-4 w-4 stroke-2" />
             </>
           )}
         </Button>
@@ -146,5 +139,5 @@ export default function BorrowAction({
         </span>
       </div>
     </div>
-  );
+  )
 }

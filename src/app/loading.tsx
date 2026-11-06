@@ -2,7 +2,7 @@ import { BookOpen } from "lucide-react";
 
 export default function Loading() {
   return (
-    <div className="min-h-[calc(100vh-4rem)] w-full bg-background py-14 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen w-full bg-background py-14 px-4 sm:px-6 lg:px-8 flex flex-col items-center justify-center">
       <div className="mx-auto max-w-7xl space-y-10">
 
         {/* Animated Brand Pulse Header */}
@@ -14,7 +14,7 @@ export default function Loading() {
 
           <div className="space-y-2">
             <h2 className="font-heading text-2xl font-normal tracking-tight text-foreground sm:text-3xl">
-              Turning the page...
+              Page Loading...
             </h2>
             <p className="text-xs text-muted-foreground">
               Preparing the shelf and stories for you.
@@ -23,31 +23,31 @@ export default function Loading() {
         </div>
 
         {/* Filter / Search Bar Skeleton */}
-        <div className="h-14 w-full animate-pulse rounded-2xl border border-border/60 bg-muted/40" />
+        {/* <div className="h-14 w-full animate-pulse rounded-2xl border border-border/60 bg-muted/40" /> */}
 
         {/* Book Cards Grid Skeleton */}
-        <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 md:gap-6">
+        {/* <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 md:gap-6">
           {Array.from({ length: 10 }).map((_, i) => (
             <div
               key={i}
               className="flex flex-col space-y-3 rounded-xl border border-border/60 bg-card p-3 shadow-2xs"
-            >
+            > */}
               {/* Cover Aspect Ratio Skeleton */}
-              <div className="aspect-[2/3] w-full animate-pulse rounded-lg bg-muted/60" />
+              {/* <div className="aspect-[2/3] w-full animate-pulse rounded-lg bg-muted/60" /> */}
 
               {/* Title & Metadata Lines */}
-              <div className="space-y-2 pt-1">
+              {/* <div className="space-y-2 pt-1">
                 <div className="h-3.5 w-4/5 animate-pulse rounded bg-muted/80" />
                 <div className="h-3 w-1/2 animate-pulse rounded bg-muted/50" />
-              </div>
+              </div> */}
 
               {/* Tag / Button Skeleton */}
-              <div className="pt-1">
+              {/* <div className="pt-1">
                 <div className="h-7 w-full animate-pulse rounded-md bg-muted/40" />
               </div>
             </div>
           ))}
-        </div>
+        </div> */}
 
       </div>
     </div>

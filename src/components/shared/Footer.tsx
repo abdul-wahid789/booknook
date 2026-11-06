@@ -19,6 +19,9 @@ export default function Footer() {
                 <Image
                   src="/logo-white.png"
                   alt="BookNook Logo"
+                  sizes="24px"
+                  // width={50}
+                  // height={50}
                   fill
                   className="object-contain"
                 />

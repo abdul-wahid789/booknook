@@ -41,13 +41,11 @@ export default function Navbar() {
   const { data, isPending } = useSession();
   const [mobileOpen, setMobileOpen] = useState(false);
 
-  // Public links always visible
   const publicLinks = [
     { name: "Home", href: "/", icon: Home },
     { name: "All Books", href: "/all-books", icon: BookOpen },
   ];
 
-  // Protected links only visible when signed in
   const authLinks = [
     { name: "Add Book", href: "/add-book", icon: PlusCircle },
     { name: "My Books", href: "/my-books", icon: Library },
@@ -80,13 +78,14 @@ export default function Navbar() {
     <header className="sticky top-0 z-50 w-full border-b border-border/70 bg-background/80 backdrop-blur-xl">
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
 
-        {/* Brand / Logo */}
+        {/* Logo */}
         <Link href="/" className="flex items-center gap-2 transition-opacity hover:opacity-90">
           <div className="relative h-7 w-7">
             <Image
               src="/logo.png"
               alt="BookNook Logo"
               fill
+              sizes="24px"
               className="object-contain"
               priority
             />
@@ -96,7 +95,7 @@ export default function Navbar() {
           </span>
         </Link>
 
-        {/* Desktop Navigation Links */}
+        {/* Desktop */}
         <nav className="hidden items-center gap-1 md:flex lg:gap-2">
           {visibleLinks.map((link) => {
             const isActive = pathname === link.href;
@@ -112,21 +111,20 @@ export default function Navbar() {
               >
                 {link.name}
                 {isActive && (
-                  <span className="absolute inset-x-2 -bottom-[19px] h-0.5 rounded-full bg-primary" />
+                  <span className="absolute inset-x-2 -bottom-4.75 h-0.5 rounded-full bg-primary" />
                 )}
               </Link>
             );
           })}
         </nav>
 
-        {/* Right Action Stack */}
+        {/* Right */}
         <div className="flex items-center gap-2 sm:gap-3">
           <ModeToggle />
-
           {isPending ? (
             <Button variant="outline" size="sm" disabled className="h-9 gap-2 text-xs">
               <Spinner className="h-3.5 w-3.5" />
-              <span className="hidden sm:inline">Loading...</span>
+              {/* <span className="hidden sm:inline">Loading...</span> */}
             </Button>
           ) : data?.user ? (
             <DropdownMenu>
@@ -138,7 +136,7 @@ export default function Navbar() {
                   />
                 }
               >
-                <span className="hidden max-w-[120px] truncate font-medium text-foreground sm:inline">
+                <span className="hidden max-w-30 truncate font-medium text-foreground sm:inline">
                   {data.user.name}
                 </span>
                 <Avatar className="h-7 w-7 border border-border">
@@ -211,7 +209,7 @@ export default function Navbar() {
                 <Menu className="h-4 w-4" />
                 <span className="sr-only">Toggle navigation menu</span>
               </SheetTrigger>
-              <SheetContent side="right" className="flex w-[280px] flex-col justify-between p-6 sm:w-[320px]">
+              <SheetContent side="right" className="flex w-70 flex-col justify-between p-6 sm:w-[320px]">
                 <div className="space-y-6">
                   <SheetHeader className="text-left">
                     <SheetTitle className="flex items-center gap-2">

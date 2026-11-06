@@ -1,26 +1,37 @@
 import { TMethod, IResponse } from "@/schemas/server";
 
 const server_url = process.env.NEXT_PUBLIC_SERVER_URL;
+const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
-export async function getPromise(url: string, errorMessage: string = "Something went wrong"): Promise<IResponse> {
-
+export async function getPromise(url: string, token: string | null, errorMessage: string = "Something went wrong"): Promise<IResponse> {
+    await delay(5000);
     try {
-        const response = await fetch(`${server_url}${url}`);
+        let response = null
+        if (token) {
+            response = await fetch(`${server_url}${url}`, {
+                headers: {
+                    authorization: `Bearer ${token}`
+                }
+            });
+        } else {
+            response = await fetch(`${server_url}${url}`);
+        }
         try {
             const resData = await response.json()
             if (resData.error) {
-                return {data: [],  msg: resData.msg, error: true }
+                return { data: [], msg: resData.msg, error: true }
             }
             return resData;
         } catch {
-            return {data: [],  msg: 'JSON error', error: true }
+            return { data: [], msg: 'JSON error', error: true }
         }
     } catch {
-        return {data: [],  msg: 'Server Error', error: true };
+        return { data: [], msg: 'Server Error', error: true };
     }
 }
 
 export async function postPromise<T>(url: string,
+    token: string,
     action: TMethod,
     data: T,
     errorMessage: string = "Something went wrong"): Promise<IResponse> {
@@ -28,7 +39,8 @@ export async function postPromise<T>(url: string,
         const response = await fetch(`${server_url}${url}`, {
             method: action,
             headers: {
-                "Content-Type": "application/json"
+                "Content-Type": "application/json",
+                authorization: `Bearer ${token}`
             },
             body: JSON.stringify(data)
         });

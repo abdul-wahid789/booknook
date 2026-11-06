@@ -1,4 +1,3 @@
-import AllBooksGrid from '@/components/all-books/AllBooksGrid';
 import BooksList from '@/components/all-books/BooksList';
 import { BooksListSkeleton } from '@/components/all-books/BooksListSkeleton';
 import React, { Suspense } from 'react';
@@ -8,7 +7,7 @@ const page = () => {
 
     return (
         <div className="min-h-screen w-full bg-background py-14 px-4 sm:px-6 lg:px-8">
-            <div className="mx-auto max-w-7xl">
+            <div className="mx-auto max-w-7xl space-y-10">
 
                 <div className='space-y-2'>
                     <p className='font-bold text-muted-foreground'>The Community Collection</p>
