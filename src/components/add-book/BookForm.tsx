@@ -127,23 +127,17 @@ export default function BookForm({ user }: BookFormProps) {
 
   const onSubmit: SubmitHandler<TBook> = async (data) => {
     setIsSubmitting(true);
-    try {
-      const token = await getClientToken()
-      const res = await addBook(data, token);
+
+    const token = await getClientToken()
+    const res = await addBook(data, token);
+    if (!res.error) {
       successToast("Book contributed successfully");
       resetFormState();
-    } catch (error) {
-      console.error("Submission failed:", error);
-      errorToast(
-        error instanceof Error
-          ? error.message
-          : "Failed to add book. Please try again."
-      );
-    } finally {
+    } else {
+      errorToast(res.msg);
       setIsSubmitting(false);
-    }
-  };
-
+    };
+  }
   return (
     <form
       id="form-add-book"
