@@ -9,7 +9,7 @@ const protectedRoutes = [
   /^\/add-book(\/.*)?$/,
   /^\/my-borrows(\/.*)?$/,
   /^\/borrowed-books(\/.*)?$/,
-  /^\/books\/[^/]+(\/.*)?$/,
+  /^\/book\/[^/]+(\/.*)?$/,
 ];
 
 export async function proxy(request: NextRequest) {
@@ -43,6 +43,6 @@ export const config = {
     '/add-book/:path*',
     '/my-borrows/:path*',
     '/borrowed-books/:path*',
-    '/books/:id/:path*',
+    '/book/:id/:path*',
   ],
 };
