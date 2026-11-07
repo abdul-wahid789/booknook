@@ -9,7 +9,7 @@ const protectedRoutes = [
   /^\/add-book(\/.*)?$/,
   /^\/my-borrows(\/.*)?$/,
   /^\/borrowed-books(\/.*)?$/,
-  /^\/book\/[^/]+(\/.*)?$/,
+  /^\/book(\/.*)?$/,
 ];
 
 export async function proxy(request: NextRequest) {
@@ -20,7 +20,7 @@ export async function proxy(request: NextRequest) {
   //   request.cookies.get('__Secure-better-auth.session_token');
 
   const sessionCookie = await auth.api.getSession({
-    headers: request.headers
+    headers: new Headers(request.headers)
   })
 
   const isProtected = protectedRoutes.some((route) => route.test(pathname));
@@ -43,6 +43,6 @@ export const config = {
     '/add-book/:path*',
     '/my-borrows/:path*',
     '/borrowed-books/:path*',
-    '/book/:id/:path*',
+    '/book/:path*',
   ],
 };
