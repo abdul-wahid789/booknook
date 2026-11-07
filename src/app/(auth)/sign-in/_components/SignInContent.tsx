@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, Suspense } from 'react';
+import React, { useState } from 'react';
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { Controller, useForm } from 'react-hook-form';
@@ -189,7 +189,7 @@ const SignInContent = () => {
                           id="form-email"
                           aria-invalid={fieldState.invalid}
                           autoComplete="email"
-                          type="email"
+                          type="text"
                           placeholder="user@example.com"
                           className="text-sm"
                         />
@@ -246,7 +246,7 @@ const SignInContent = () => {
             </form>
           </CardContent>
 
-          <CardFooter className="mt-6 flex flex-col items-center p-0">
+          <CardFooter className="mt-6 mb-10 bg-card flex flex-col items-center p-0">
             <Button
               type="submit"
               form="form-signin"
@@ -263,13 +263,13 @@ const SignInContent = () => {
               )}
             </Button>
 
-            <p className="mt-4 text-xs text-muted-foreground">
+            <p className="mt-4 text-muted-foreground">
               New to the shared shelf?{' '}
               <Link
                 href={
                   callbackUrl !== '/all-books'
-                    ? `/signup?callbackUrl=${encodeURIComponent(callbackUrl)}`
-                    : '/signup'
+                    ? `/sign-up?callbackUrl=${encodeURIComponent(callbackUrl)}`
+                    : '/sign-up'
                 }
                 className="font-semibold text-primary hover:underline"
               >
