@@ -59,19 +59,19 @@ export async function postPromise<T>(url: string,
 
 
 export async function checkBorrowStatus(bookId: string, userEmail: string, token: string) {
-  try {
-    const res = await fetch(
-      `${process.env.NEXT_PUBLIC_SERVER_URL}/borrow-status/${bookId}/${encodeURIComponent(userEmail)}`,
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      }
-    );
-    const data = await res.json();
-    return data.hasBorrowed ?? false;
-  } catch (error) {
-    console.error('Failed to check borrow status:', error);
-    return false;
-  }
+    try {
+        const res = await fetch(
+            `${process.env.NEXT_PUBLIC_SERVER_URL}/borrow-status/${bookId}/${encodeURIComponent(userEmail)}`,
+            {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            }
+        );
+        const data = await res.json();
+        return data.hasBorrowed ?? false;
+    } catch (error) {
+        console.error('Failed to check borrow status:', error);
+        return false;
+    }
 }

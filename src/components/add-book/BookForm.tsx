@@ -135,8 +135,8 @@ export default function BookForm({ user }: BookFormProps) {
       resetFormState();
     } else {
       errorToast(res.msg);
-      setIsSubmitting(false);
     };
+    setIsSubmitting(false);
   }
   return (
     <form
