@@ -37,19 +37,25 @@ import { errorToast, successToast } from "@/lib/toasts";
 import { useSession } from "@/lib/auth-client";
 import { Spinner } from "@/components/ui/spinner";
 import { addBook } from "@/lib/bookOperation";
+import getClientToken from "@/lib/clientToken";
 
-export default function BookForm() {
+interface BookFormProps {
+  user: {
+    name: string,
+    email: string
+  }
+}
+
+export default function BookForm({ user }: BookFormProps) {
   const fileInputRef = useRef<HTMLInputElement | null>(null);
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
   const [isDragOver, setIsDragOver] = useState(false);
-  const { data: sessionData } = useSession();
 
-  const getSessionDefaults = () => ({
-    userName: sessionData?.user?.name ?? "",
-    userEmail: sessionData?.user?.email ?? "",
-  });
+  const userName = user.name
+  const userEmail = user.email
+
 
   const form = useForm<TBookInput, unknown, TBook>({
     resolver: zodResolver(bookSchema),
@@ -60,22 +66,10 @@ export default function BookForm() {
       totalCopies: 1,
       image: "",
       shortDescription: "",
-      userName: sessionData?.user?.name ?? "",
-      userEmail: sessionData?.user?.email ?? "",
+      userName: userName,
+      userEmail: userEmail,
     },
   });
-
-  // Sync session once client-side auth loads
-  useEffect(() => {
-    if (sessionData?.user) {
-      form.setValue("userName", sessionData.user.name ?? "", {
-        shouldValidate: true,
-      });
-      form.setValue("userEmail", sessionData.user.email ?? "", {
-        shouldValidate: true,
-      });
-    }
-  }, [sessionData, form]);
 
   const watchImage = form.watch("image");
 
@@ -125,7 +119,8 @@ export default function BookForm() {
       totalCopies: 1,
       image: "",
       shortDescription: "",
-      ...getSessionDefaults(),
+      userEmail,
+      userName
     });
     if (fileInputRef.current) fileInputRef.current.value = "";
   };
@@ -133,9 +128,9 @@ export default function BookForm() {
   const onSubmit: SubmitHandler<TBook> = async (data) => {
     setIsSubmitting(true);
     try {
-      const res = await addBook(data);
-      console.log("form data", res);
-      successToast("Book contributed to the shelf!");
+      const token = await getClientToken()
+      const res = await addBook(data, token);
+      successToast("Book contributed successfully");
       resetFormState();
     } catch (error) {
       console.error("Submission failed:", error);
@@ -334,11 +329,10 @@ export default function BookForm() {
                   onClick={() =>
                     !isUploading && fileInputRef.current?.click()
                   }
-                  className={`flex flex-col items-center justify-center rounded-xl border border-dashed py-8 text-center transition-colors cursor-pointer ${
-                    isDragOver
-                      ? "border-primary bg-primary/5"
-                      : "border-border/80 bg-background/50 hover:bg-muted/30"
-                  } ${isUploading ? "pointer-events-none opacity-60" : ""}`}
+                  className={`flex flex-col items-center justify-center rounded-xl border border-dashed py-8 text-center transition-colors cursor-pointer ${isDragOver
+                    ? "border-primary bg-primary/5"
+                    : "border-border/80 bg-background/50 hover:bg-muted/30"
+                    } ${isUploading ? "pointer-events-none opacity-60" : ""}`}
                 >
                   {isUploading ? (
                     <div className="flex flex-col items-center gap-2">

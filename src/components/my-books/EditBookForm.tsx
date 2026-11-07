@@ -39,8 +39,13 @@ import { bookCategories, bookSchema, TBook, TBookInput } from "@/schemas/book";
 import { updateBook } from "@/lib/bookOperation";
 import { uploadToImgBB } from "@/lib/uploadImage";
 import { errorToast, successToast } from "@/lib/toasts";
+import getClientToken from "@/lib/clientToken";
 
-export default function EditBookForm({ book }: { book: TBook }) {
+interface EditBookFormProps {
+    book: TBook,
+}
+
+export default function EditBookForm({ book}: EditBookFormProps) {
     const router = useRouter();
     const fileInputRef = React.useRef<HTMLInputElement | null>(null);
 
@@ -63,7 +68,6 @@ export default function EditBookForm({ book }: { book: TBook }) {
 
     const watchImage = form.watch("image");
 
-    // Handle uploading replacement covers directly to ImgBB
     async function handleFileProcess(file: File) {
         if (!file.type.startsWith("image/")) {
             errorToast("Invalid file type. Please upload an image.");
@@ -100,7 +104,8 @@ export default function EditBookForm({ book }: { book: TBook }) {
 
         setIsSubmitting(true);
         try {
-            const res = await updateBook(book._id, data);
+            const token = await getClientToken()
+            const res = await updateBook(token, book._id, data);
 
             if (res.error) {
                 errorToast(res.msg || "Unable to save book changes.");

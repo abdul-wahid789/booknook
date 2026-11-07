@@ -3,10 +3,6 @@ import { Plus } from "lucide-react";
 import Link from "next/link";
 import BookContent from "./_components/BookContent";
 import { Suspense } from "react";
-import { useSession } from "@/lib/auth-client";
-import BookContent2 from "./_components/BookContent copy";
-import { auth } from "@/lib/auth";
-import { headers } from "next/headers";
 import BookContentSkeleton from "./_components/BookContentSkeleton";
 
 export default function MyBooksPage() {

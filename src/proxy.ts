@@ -1,8 +1,10 @@
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
+import { auth } from './lib/auth';
 
 // Protected path patterns
 const protectedRoutes = [
+  /^\/profile(\/.*)?$/,
   /^\/my-books(\/.*)?$/,
   /^\/add-book(\/.*)?$/,
   /^\/my-borrows(\/.*)?$/,
@@ -10,12 +12,16 @@ const protectedRoutes = [
   /^\/books\/[^/]+(\/.*)?$/,
 ];
 
-export function proxy(request: NextRequest) {
+export async function proxy(request: NextRequest) {
   const { pathname, search } = request.nextUrl;
 
-  const sessionCookie =
-    request.cookies.get('better-auth.session_token') ||
-    request.cookies.get('__Secure-better-auth.session_token');
+  // const sessionCookie =
+  //   request.cookies.get('better-auth.session_token') ||
+  //   request.cookies.get('__Secure-better-auth.session_token');
+
+  const sessionCookie = await auth.api.getSession({
+    headers: request.headers
+  })
 
   const isProtected = protectedRoutes.some((route) => route.test(pathname));
 
@@ -32,6 +38,7 @@ export function proxy(request: NextRequest) {
 
 export const config = {
   matcher: [
+    '/profile/:path*',
     '/my-books/:path*',
     '/add-book/:path*',
     '/my-borrows/:path*',

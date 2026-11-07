@@ -12,6 +12,7 @@ import {
   BookmarkCheck,
   Library,
   Home,
+  User,
 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
@@ -103,11 +104,10 @@ export default function Navbar() {
               <Link
                 key={link.name}
                 href={link.href}
-                className={`relative px-3 py-1.5 text-xs font-medium transition-colors hover:text-foreground ${
-                  isActive
+                className={`relative px-3 py-1.5 text-xs font-medium transition-colors hover:text-foreground ${isActive
                     ? "font-semibold text-primary"
                     : "text-muted-foreground"
-                }`}
+                  }`}
               >
                 {link.name}
                 {isActive && (
@@ -158,7 +158,29 @@ export default function Navbar() {
                   </p>
                 </div>
                 <DropdownMenuSeparator />
+                {/* <DropdownMenuGroup>
+                  <Link href="/my-books">
+                    <DropdownMenuItem className="cursor-pointer">
+                      <Library className="mr-2 h-4 w-4" />
+                      <span>My Books</span>
+                    </DropdownMenuItem>
+                  </Link>
+                  <Link href="/my-borrows">
+                    <DropdownMenuItem className="cursor-pointer">
+                      <BookmarkCheck className="mr-2 h-4 w-4" />
+                      <span>My Borrows</span>
+                    </DropdownMenuItem>
+                  </Link>
+                </DropdownMenuGroup> */}
+
+
                 <DropdownMenuGroup>
+                  <Link href="/profile">
+                    <DropdownMenuItem className="cursor-pointer">
+                      <User className="mr-2 h-4 w-4" />
+                      <span>Profile</span>
+                    </DropdownMenuItem>
+                  </Link>
                   <Link href="/my-books">
                     <DropdownMenuItem className="cursor-pointer">
                       <Library className="mr-2 h-4 w-4" />
@@ -172,6 +194,7 @@ export default function Navbar() {
                     </DropdownMenuItem>
                   </Link>
                 </DropdownMenuGroup>
+
                 <DropdownMenuSeparator />
                 <DropdownMenuItem
                   variant="destructive"
@@ -230,11 +253,10 @@ export default function Navbar() {
                           key={link.name}
                           href={link.href}
                           onClick={() => setMobileOpen(false)}
-                          className={`flex items-center gap-3 rounded-lg px-3 py-2.5 text-xs font-medium transition-colors ${
-                            isActive
+                          className={`flex items-center gap-3 rounded-lg px-3 py-2.5 text-xs font-medium transition-colors ${isActive
                               ? "bg-secondary font-semibold text-secondary-foreground"
                               : "text-muted-foreground hover:bg-muted hover:text-foreground"
-                          }`}
+                            }`}
                         >
                           {Icon && <Icon className="h-4 w-4 shrink-0" />}
                           <span>{link.name}</span>

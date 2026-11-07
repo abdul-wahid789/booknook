@@ -26,7 +26,6 @@ export async function getBookDetails(id: string, token: string): Promise<IRespon
 }
 
 export async function addBorrowBook(data: TBorrowInput, token: string): Promise<IResponse> {
-  console.log(token)
   return await postPromise<TBorrowInput>("/add-borrow", token, "POST", data, "Failed to process borrow request");
 }
 

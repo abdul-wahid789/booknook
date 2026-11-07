@@ -10,7 +10,6 @@ export default async function BookDetailsPage({
 }: {
     params: Promise<{ id: string }>;
 }) {
-    const { id } = await params;
 
     return (
         <div className="min-h-screen w-full bg-background py-10 px-4 sm:px-6 lg:px-8">
@@ -30,7 +29,7 @@ export default async function BookDetailsPage({
 
                 {/* main card */}
                 <Suspense fallback={<BookDetailsSkeleton />}>
-                    <BookDetailsContent id={id} />
+                    <BookDetailsContent params={params} />
                 </Suspense>
 
                 {/* Bottom Banner: Community Care Reminder */}

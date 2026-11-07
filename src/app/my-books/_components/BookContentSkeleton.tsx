@@ -1,4 +1,5 @@
 import { Skeleton } from '@/components/ui/skeleton';
+import { Spinner } from '@/components/ui/spinner';
 import { Check, Loader2 } from 'lucide-react';
 import React from 'react';
 
@@ -13,10 +14,10 @@ const BookContentSkeleton = () => {
                         <Skeleton className="h-5 w-15 rounded-md" />
                     </span>
                 </div>
-                <p className="text-xs text-muted-foreground">
+                <div className="text-xs text-muted-foreground">
                     <Skeleton className="h-5 w-10 rounded-md" />
 
-                </p>
+                </div>
             </div>
             {/* Shared Books Table Container */}
             <div className="overflow-hidden rounded-xl border border-border/70 bg-card shadow-2xs">
@@ -40,7 +41,7 @@ const BookContentSkeleton = () => {
                                     className="py-12 text-center text-muted-foreground"
                                 >
                                     <div className="flex items-center justify-center gap-2">
-                                        <Loader2 className="h-4 w-4 animate-spin text-primary" />
+                                        <Spinner className="h-4 w-4" />
                                         <span>Gathering your books...</span>
                                     </div>
                                 </td>

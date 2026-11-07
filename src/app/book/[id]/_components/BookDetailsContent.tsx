@@ -1,4 +1,4 @@
-import BorrowAction from '@/components/book-details/BorrowAction';
+import BorrowAction from '@/app/book/[id]/_components/BorrowAction';
 import { Separator } from '@/components/ui/separator';
 import { getBookDetails } from '@/lib/bookOperation';
 import getServerToken from '@/lib/serverToken';
@@ -7,10 +7,24 @@ import { Check } from 'lucide-react';
 import Image from 'next/image';
 import { notFound } from 'next/navigation';
 import React from 'react';
+import BorrowModal from './BorrowModal';
+import { auth } from '@/lib/auth';
+import { headers } from 'next/headers';
+import { checkBorrowStatus } from '@/lib/response';
 
-const BookDetailsContent = async ({ id }: { id: string }) => {
+const BookDetailsContent = async ({ params }: { params: Promise<{ id: string }> }) => {
+
+    const { id } = await params
     const token = await getServerToken()
     const resData = await getBookDetails(id, token);
+
+    const session = await auth.api.getSession({
+        headers: await headers(),
+    })
+
+    const user = session.user
+
+    const isBorrowed = await checkBorrowStatus(id, user.email, token)
 
     if (resData?.error || !resData?.data) {
         notFound();
@@ -23,6 +37,7 @@ const BookDetailsContent = async ({ id }: { id: string }) => {
     if (!book) {
         notFound();
     }
+
     const isAvailable = (book.totalCopies ?? 0) > 0;
 
     const initials = book.userName
@@ -127,10 +142,12 @@ const BookDetailsContent = async ({ id }: { id: string }) => {
                         </div>
 
                         <BorrowAction
-                            bookId={book._id}
-                            bookTitle={book.title}
-                            isAvailable={isAvailable}
-                        />
+                            book={book}
+                            user={user}
+                            isBorrowed={isBorrowed}
+                            isAvailable={isAvailable} />
+
+
                     </div>
                 </div>
             </div>

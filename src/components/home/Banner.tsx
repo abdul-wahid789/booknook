@@ -12,13 +12,17 @@ import {
 import { Button } from '@/components/ui/button';
 import Autoplay from 'embla-carousel-autoplay';
 import BannerGrid from './BannerGrid';
+import bannerImg1 from '@/assets/images/banner-img-1.jpg'
+import bannerImg2 from '@/assets/images/banner-img-2.jpg'
+import bannerImg3 from '@/assets/images/banner-img-3.jpg'
+import { StaticImageData } from 'next/image';
 
 export interface SlideData {
     topText: string;
     hd1: string;
     hd2: string;
     des: string;
-    img: string;
+    img: string | StaticImageData;
 }
 
 const sliders: SlideData[] = [
@@ -27,21 +31,21 @@ const sliders: SlideData[] = [
         hd1: "Good books.",
         hd2: "Better shared.",
         des: "A small online library for your next great read. Find a book, borrow it for a few days, and let the story unfold.",
-        img: "https://images.unsplash.com/photo-1544457070-4cd773b4d71e?q=80&w=1600&auto=format&fit=crop"
+        img: bannerImg1
     },
     {
         topText: "CURATED FOR READERS",
         hd1: "Endless pages.",
         hd2: "Countless worlds.",
         des: "Explore our handpicked collection across literature, science, and poetry available to reserve instantly.",
-        img: "https://images.unsplash.com/photo-1758726535099-5b7ff51bcc55?q=80&w=1173&auto=format&fit=crop"
+        img: bannerImg2
     },
     {
         topText: "COMMUNITY BOOK EXCHANGE",
         hd1: "Read today.",
         hd2: "Return tomorrow.",
         des: "Pass the journey forward. Borrow, return, and review with fellow book lovers across the community.",
-        img: "https://images.unsplash.com/photo-1524995997946-a1c2e315a42f?q=80&w=1600&auto=format&fit=crop"
+        img: bannerImg3
     }
 ];
 

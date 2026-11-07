@@ -4,7 +4,7 @@ const server_url = process.env.NEXT_PUBLIC_SERVER_URL;
 const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
 export async function getPromise(url: string, token: string | null, errorMessage: string = "Something went wrong"): Promise<IResponse> {
-    await delay(5000);
+    // await delay(5000);
     try {
         let response = null
         if (token) {
@@ -44,7 +44,6 @@ export async function postPromise<T>(url: string,
             },
             body: JSON.stringify(data)
         });
-        console.log(response)
         try {
             const serverData = await response.json();
             return serverData as IResponse;
@@ -57,4 +56,23 @@ export async function postPromise<T>(url: string,
     catch (error) {
         return { data: [], msg: errorMessage + ": " + String(error), error: true };
     }
+}
+
+
+export async function checkBorrowStatus(bookId: string, userEmail: string, token: string) {
+  try {
+    const res = await fetch(
+      `${process.env.NEXT_PUBLIC_SERVER_URL}/borrow-status/${bookId}/${encodeURIComponent(userEmail)}`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    const data = await res.json();
+    return data.hasBorrowed ?? false;
+  } catch (error) {
+    console.error('Failed to check borrow status:', error);
+    return false;
+  }
 }

@@ -4,6 +4,10 @@ import { useSession } from "@/lib/auth-client";
 import { BookOpen, User } from "lucide-react";
 import Link from "next/link";
 import ProfileNote from "./_components/ProfileNote";
+import { Suspense } from "react";
+import BookFormSkeleton from "./_components/BookFormSkeleton";
+import ProfileNoteSkeleton from "./_components/ProfileNoteSkeleton";
+import AddBookFormUser from "@/components/add-book/AddBookFormUser";
 
 export default function AddBookPage() {
 
@@ -39,11 +43,9 @@ export default function AddBookPage() {
                             </div>
 
 
-
-                            <BookForm />
-
-
-
+                            <Suspense fallback={<BookFormSkeleton />}>
+                                <AddBookFormUser />
+                            </Suspense>
                         </Card>
                     </div>
 
@@ -89,7 +91,9 @@ export default function AddBookPage() {
                         </div>
 
                         {/* Profile note at bottom of sidebar */}
-                        <ProfileNote />
+                        <Suspense fallback={<ProfileNoteSkeleton />}>
+                            <ProfileNote />
+                        </Suspense>
                     </aside>
 
                 </div>

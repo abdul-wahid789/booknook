@@ -38,5 +38,20 @@ export const bookSchema = z.object({
   createdAt: z.coerce.date().optional(),
 });
 
+export type TBorrowBook = {
+  _id: string;
+  userEmail: string;
+  bookId: string;
+  status: "borrowed" | "returned" | "overdue" | string;
+  borrowedAt: string;
+  returnDueDate: string;
+  bookDetails: {
+    _id: string;
+    title: string;
+    authorName: string;
+    image: string;
+  };
+};
+
 export type TBookInput = z.input<typeof bookSchema>;
 export type TBook = z.output<typeof bookSchema>;
