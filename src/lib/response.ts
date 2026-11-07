@@ -14,6 +14,7 @@ export async function getPromise(url: string, token: string | null, errorMessage
             });
         } else {
             response = await fetch(`${server_url}${url}`);
+            console.log(response)
         }
         try {
             const resData = await response.json()
@@ -24,8 +25,8 @@ export async function getPromise(url: string, token: string | null, errorMessage
         } catch {
             return { data: [], msg: 'JSON error', error: true }
         }
-    } catch {
-        return { data: [], msg: 'Server Error', error: true };
+    } catch (error) {
+        return { data: [], msg: 'Server Error: ' + String(error), error: true };
     }
 }
 
@@ -53,7 +54,7 @@ export async function postPromise<T>(url: string,
         }
     }
     catch (error) {
-        return { data: [], msg: errorMessage + ": " + String(error), error: true };
+        return { data: [], msg: "Server Error" + ": " + String(error), error: true };
     }
 }
 
