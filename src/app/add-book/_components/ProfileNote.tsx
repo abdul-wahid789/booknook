@@ -1,5 +1,5 @@
+import Retry from '@/components/shared/Retry';
 import { auth } from '@/lib/auth';
-import { useSession } from '@/lib/auth-client';
 import { User } from 'lucide-react';
 import { headers } from 'next/headers';
 import Link from 'next/link';
@@ -10,6 +10,7 @@ const ProfileNote = async () => {
         headers: await headers(),
     })
 
+    if(!session) return <Retry msg={'Session Error'} />
     const user = session.user
 
     return (

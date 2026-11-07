@@ -9,7 +9,7 @@ import { Button } from '@/components/ui/button';
 
 const NewArrival = async () => {
     const resData: IResponse = await getNewBooks();
-    const books: TBook[] = Array.isArray(resData?.data) ? resData.data : [];
+    const books: TBook[] = Array.isArray(resData?.data) ? (resData.data as TBook[]) : [];
 
     return (
         <section className="w-full bg-background py-16 sm:py-20">

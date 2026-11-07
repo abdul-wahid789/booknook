@@ -26,7 +26,7 @@ const MyBorrowContent = async () => {
 
   if (!res.data) return <Retry msg="No Books Found" />
   else {
-    const borrowedBooks: TBorrowBook[] = res.data
+    const borrowedBooks = res.data as TBorrowBook[]
 
     return (
       <>

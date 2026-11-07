@@ -11,6 +11,7 @@ import BorrowModal from './BorrowModal';
 import { auth } from '@/lib/auth';
 import { headers } from 'next/headers';
 import { checkBorrowStatus } from '@/lib/response';
+import Retry from '@/components/shared/Retry';
 
 const BookDetailsContent = async ({ params }: { params: Promise<{ id: string }> }) => {
 
@@ -22,6 +23,7 @@ const BookDetailsContent = async ({ params }: { params: Promise<{ id: string }> 
         headers: await headers(),
     })
 
+    if(!session) return <Retry msg={'Session Error'} />
     const user = session.user
 
     const isBorrowed = await checkBorrowStatus(id, user.email, token)
@@ -31,8 +33,8 @@ const BookDetailsContent = async ({ params }: { params: Promise<{ id: string }> 
     }
 
     const book: TBook = Array.isArray(resData.data)
-        ? resData.data[0]
-        : resData.data;
+        ? resData.data[0] as TBook
+        : resData.data as TBook;
 
     if (!book) {
         notFound();

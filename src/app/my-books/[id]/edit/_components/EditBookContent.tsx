@@ -21,8 +21,8 @@ const EditBookContent = async ({
     }
 
     const book: TBook = Array.isArray(res.data)
-        ? res.data[0]
-        : res.data;
+        ? res.data[0] as TBook
+        : res.data as TBook;
 
     if (!book) {
         notFound();

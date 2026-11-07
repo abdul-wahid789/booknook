@@ -2,6 +2,7 @@ import { auth } from '@/lib/auth';
 import { headers } from 'next/headers';
 import React from 'react';
 import BookForm from './BookForm';
+import Retry from '../shared/Retry';
 
 const AddBookFormUser = async () => {
 
@@ -9,6 +10,7 @@ const AddBookFormUser = async () => {
         headers: await headers(),
     })
 
+    if (!session) return <Retry msg={'Session error'} />
     const user = session.user
 
     return (

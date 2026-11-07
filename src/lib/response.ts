@@ -1,7 +1,6 @@
 import { TMethod, IResponse } from "@/schemas/server";
 
 const server_url = process.env.NEXT_PUBLIC_SERVER_URL;
-const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
 export async function getPromise(url: string, token: string | null, errorMessage: string = "Something went wrong"): Promise<IResponse> {
     // await delay(5000);
