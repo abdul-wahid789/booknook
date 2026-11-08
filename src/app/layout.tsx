@@ -34,7 +34,7 @@ export default function RootLayout({
     <html
       lang="en"
       suppressHydrationWarning
-      className={cn("h-full", inter.variable, libreBaskerville.variable)}
+      className={cn("h-full scroll-smooth", inter.variable, libreBaskerville.variable)}
     >
       <body className="min-h-full flex flex-col w-full bg-background text-foreground antialiased">
         <ThemeProvider
