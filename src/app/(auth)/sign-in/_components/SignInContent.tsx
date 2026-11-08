@@ -217,12 +217,7 @@ const SignInContent = () => {
                                         <Field data-invalid={fieldState.invalid}>
                                             <div className="flex items-center justify-between">
                                                 <FieldLabel htmlFor="form-password">Password</FieldLabel>
-                                                <Link
-                                                    href="/forgot-password"
-                                                    className="text-xs text-muted-foreground transition-colors hover:text-primary hover:underline"
-                                                >
-                                                    Forgot password?
-                                                </Link>
+                
                                             </div>
                                             <InputGroup className="h-10">
                                                 <InputGroupInput
