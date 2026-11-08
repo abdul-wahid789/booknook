@@ -8,7 +8,7 @@ import { TBook } from '@/schemas/book';
 import { Button } from '@/components/ui/button';
 
 const NewArrival = async () => {
-    const resData: IResponse = await getNewBooks();
+    const resData = await getNewBooks();
     const books: TBook[] = Array.isArray(resData?.data) ? (resData.data as TBook[]) : [];
 
     return (
