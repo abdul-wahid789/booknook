@@ -17,6 +17,7 @@ const ReturnBookAction = ({ book }: { book: TBorrowBook }) => {
         const res = await returnBook(book._id as string, token);
         if (res.error) {
             errorToast(res.msg);
+            setSubmitting(false)
             return;
         }
         setSubmitting(false)

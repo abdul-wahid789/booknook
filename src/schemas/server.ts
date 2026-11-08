@@ -1,7 +1,7 @@
 import { TBook, TBorrowBook } from "./book";
 
-export interface IResponse {
-    data?: TBook[] | TBorrowBook[]
+export interface IResponse <T> {
+    data?: T
     msg: string;
     error: boolean;
 }

@@ -2,7 +2,7 @@ import { TMethod, IResponse } from "@/schemas/server";
 
 const server_url = process.env.NEXT_PUBLIC_SERVER_URL;
 
-export async function getPromise(url: string, token: string | null, errorMessage: string = "Something went wrong"): Promise<IResponse> {
+export async function getPromise<T>(url: string, token: string | null, errorMessage: string = "Something went wrong"): Promise<IResponse<T>> {
     // await delay(5000);
     try {
         let response = null
@@ -12,21 +12,22 @@ export async function getPromise(url: string, token: string | null, errorMessage
                     authorization: `Bearer ${token}`
                 }
             });
+            console.log(response)
+
         } else {
             response = await fetch(`${server_url}${url}`);
-            console.log(response)
         }
         try {
             const resData = await response.json()
             if (resData.error) {
-                return { data: [], msg: resData.msg, error: true }
+                return { msg: resData.msg, error: true }
             }
             return resData;
         } catch {
-            return { data: [], msg: 'JSON error', error: true }
+            return { msg: 'JSON error', error: true }
         }
     } catch (error) {
-        return { data: [], msg: 'Server Error: ' + String(error), error: true };
+        return { msg: 'Server Error: ' + String(error), error: true };
     }
 }
 
@@ -34,7 +35,7 @@ export async function postPromise<T>(url: string,
     token: string,
     action: TMethod,
     data: T,
-    errorMessage: string = "Something went wrong"): Promise<IResponse> {
+    errorMessage: string = "Something went wrong"): Promise<IResponse<T>> {
     try {
         const response = await fetch(`${server_url}${url}`, {
             method: action,
@@ -46,15 +47,41 @@ export async function postPromise<T>(url: string,
         });
         try {
             const serverData = await response.json();
-            return serverData as IResponse;
+            return serverData as IResponse<T>;
 
         }
         catch {
-            return { data: [], msg: "Invalid JSON response from server", error: true }
+            return { msg: "Invalid JSON response from server", error: true }
         }
     }
     catch (error) {
-        return { data: [], msg: "Server Error" + ": " + String(error), error: true };
+        return { msg: "Server Error" + ": " + String(error), error: true };
+    }
+}
+
+export async function deletePromise<T>(url: string,
+    token: string,
+    action: TMethod,
+    errorMessage: string = "Something went wrong"): Promise<IResponse<T>> {
+    try {
+        const response = await fetch(`${server_url}${url}`, {
+            method: action,
+            headers: {
+                "Content-Type": "application/json",
+                authorization: `Bearer ${token}`
+            },
+        });
+        try {
+            const serverData = await response.json();
+            return serverData as IResponse<T>;
+
+        }
+        catch {
+            return { msg: "Invalid JSON response from server", error: true }
+        }
+    }
+    catch (error) {
+        return { msg: "Server Error" + ": " + String(error), error: true };
     }
 }
 

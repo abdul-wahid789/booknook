@@ -48,7 +48,7 @@ const BookDeleteModal = ({ book }: { book: TBook }) => {
     }
     return (
         <Dialog>
-            <DialogTrigger render={<Button variant="destructive" size="sm">
+            <DialogTrigger render={<Button variant="destructive">
                 <Trash2 className="h-3 w-3 sm:mr-1" />
                 <span className="hidden sm:inline">Delete</span>
             </Button>}> </DialogTrigger>

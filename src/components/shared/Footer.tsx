@@ -1,7 +1,8 @@
 // components/shared/Footer.tsx
 import Link from "next/link";
-import { ArrowUpRight } from "lucide-react";
 import Image from "next/image";
+import { ArrowUpRight, Globe } from "lucide-react";
+import { FaGithub, FaInstagram, FaFacebookF } from "react-icons/fa6";
 
 export default function Footer() {
   return (
@@ -10,7 +11,7 @@ export default function Footer() {
         <div className="grid grid-cols-1 gap-10 sm:grid-cols-2 lg:grid-cols-12 lg:gap-8">
 
           {/* Brand Column */}
-          <div className="space-y-4 lg:col-span-5 pr-0 sm:pr-4">
+          <div className="space-y-4 lg:col-span-5 pr-0 sm:pr-4 items-center md:items-start flex flex-col">
             <Link
               href="/"
               className="inline-flex items-center gap-2 transition-opacity hover:opacity-90"
@@ -20,8 +21,6 @@ export default function Footer() {
                   src="/logo-white.png"
                   alt="BookNook Logo"
                   sizes="24px"
-                  // width={50}
-                  // height={50}
                   fill
                   className="object-contain"
                 />
@@ -31,14 +30,14 @@ export default function Footer() {
               </span>
             </Link>
 
-            <p className="max-w-xs text-xs sm:text-sm leading-relaxed text-white/60">
+            <p className="text-center md:text-left  max-w-xs text-xs sm:text-sm leading-relaxed text-white/60">
               A little online library with room for your next favorite. Add a book,
               borrow a book, return a book.
             </p>
           </div>
 
-          {/* Navigation Column */}
-          <div className="space-y-3 lg:col-span-2">
+          {/* Navigation Column (Hidden on mobile) */}
+          <div className="hidden md:block space-y-3 lg:col-span-2">
             <h4 className="text-xs sm:text-sm font-semibold text-white tracking-wide">
               Find your next read
             </h4>
@@ -54,7 +53,7 @@ export default function Footer() {
                 </Link>
               </li>
               <li>
-                <Link href="/signup" className="transition-colors hover:text-white">
+                <Link href="/sign-up" className="transition-colors hover:text-white">
                   Create an account
                 </Link>
               </li>
@@ -62,7 +61,7 @@ export default function Footer() {
           </div>
 
           {/* Say Hello Column */}
-          <div className="space-y-3 lg:col-span-3">
+          <div className="space-y-3 lg:col-span-3 hidden md:block">
             <h4 className="text-xs sm:text-sm font-semibold text-white tracking-wide">
               Say hello
             </h4>
@@ -84,20 +83,21 @@ export default function Footer() {
           </div>
 
           {/* Social Links Column */}
-          <div className="space-y-3 lg:col-span-2">
+          <div className="space-y-3 lg:col-span-2 flex flex-col items-center md:items-start">
             <h4 className="text-xs sm:text-sm font-semibold text-white tracking-wide">
-              Stay in the loop
+              Stay in the Touch
             </h4>
-            <ul className="space-y-2.5 text-xs sm:text-sm text-white/60">
+            <ul className="space-y-2.5 text-xs sm:text-sm text-white/60 flex md:flex-col gap-2">
               <li>
                 <a
                   href="https://abdulwahid789.vercel.app/"
                   target="_blank"
                   rel="noreferrer"
-                  className="inline-flex items-center gap-1 transition-colors hover:text-white"
+                  className="group inline-flex items-center gap-2 transition-colors hover:text-white"
                 >
-                  <span>Portfolio</span>
-                  <ArrowUpRight className="h-3.5 w-3.5 stroke-[1.75]" />
+                  <Globe className="h-4 w-4 shrink-0 transition-transform group-hover:scale-110" />
+                  <span className="hidden md:block">Portfolio</span>
+                  <ArrowUpRight className="hidden md:block h-3 w-3 stroke-[1.75] opacity-60 transition-opacity group-hover:opacity-100" />
                 </a>
               </li>
               <li>
@@ -105,10 +105,11 @@ export default function Footer() {
                   href="https://github.com/abdul-wahid789/"
                   target="_blank"
                   rel="noreferrer"
-                  className="inline-flex items-center gap-1 transition-colors hover:text-white"
+                  className="group inline-flex items-center gap-2 transition-colors hover:text-white"
                 >
-                  <span>Github</span>
-                  <ArrowUpRight className="h-3.5 w-3.5 stroke-[1.75]" />
+                  <FaGithub className="h-4 w-4 shrink-0 transition-transform group-hover:scale-110" />
+                  <span className="hidden md:block">GitHub</span>
+                  <ArrowUpRight className="hidden md:block h-3 w-3 stroke-[1.75] opacity-60 transition-opacity group-hover:opacity-100" />
                 </a>
               </li>
               <li>
@@ -116,10 +117,11 @@ export default function Footer() {
                   href="https://instagram.com/abdul.wahid789"
                   target="_blank"
                   rel="noreferrer"
-                  className="inline-flex items-center gap-1 transition-colors hover:text-white"
+                  className="group inline-flex items-center gap-2 transition-colors hover:text-white"
                 >
-                  <span>Instagram</span>
-                  <ArrowUpRight className="h-3.5 w-3.5 stroke-[1.75]" />
+                  <FaInstagram className="h-4 w-4 shrink-0 transition-transform group-hover:scale-110" />
+                  <span className="hidden md:block">Instagram</span>
+                  <ArrowUpRight className="hidden md:block h-3 w-3 stroke-[1.75] opacity-60 transition-opacity group-hover:opacity-100" />
                 </a>
               </li>
               <li>
@@ -127,10 +129,11 @@ export default function Footer() {
                   href="https://facebook.com/abdulwahid.fb"
                   target="_blank"
                   rel="noreferrer"
-                  className="inline-flex items-center gap-1 transition-colors hover:text-white"
+                  className="group inline-flex items-center gap-2 transition-colors hover:text-white"
                 >
-                  <span>Facebook</span>
-                  <ArrowUpRight className="h-3.5 w-3.5 stroke-[1.75]" />
+                  <FaFacebookF className="h-3.5 w-3.5 shrink-0 transition-transform group-hover:scale-110" />
+                  <span className="hidden md:block">Facebook</span>
+                  <ArrowUpRight className="hidden md:block h-3 w-3 stroke-[1.75] opacity-60 transition-opacity group-hover:opacity-100" />
                 </a>
               </li>
             </ul>
@@ -142,7 +145,7 @@ export default function Footer() {
         <div className="my-10 h-px w-full bg-white/10" />
 
         {/* Bottom Bar */}
-        <div className="flex flex-col items-start justify-between gap-4 text-xs text-white/50 sm:flex-row sm:items-center">
+        <div className="flex flex-col items-center md:items-start justify-between gap-4 text-xs text-white/50 sm:flex-row sm:items-center">
           <p>© 2026 BookNook. All rights reserved.</p>
           <p className="font-heading italic text-white/70">
             Good stories are meant to be shared.

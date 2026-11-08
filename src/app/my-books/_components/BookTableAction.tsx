@@ -12,7 +12,7 @@ const BookTableAction = ({book}:{book:TBook}) => {
             <Link href={`/my-books/${book._id}/edit`}>
                 <Button
                     variant="outline"
-                    size="sm">
+                    >
                     Edit
                 </Button>
             </Link>

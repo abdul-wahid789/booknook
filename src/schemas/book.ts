@@ -46,12 +46,20 @@ export type TBorrowBook = {
   status: "borrowed" | "returned" | "overdue" | string;
   borrowedAt: string;
   returnDueDate: string;
-  bookDetails: {
+  bookDetails?: {
     _id: string;
     title: string;
     authorName: string;
     image: string;
   };
+};
+export type TBorrowInput = {
+  bookId: string;
+  userEmail: string;
+  status: "borrowed" | "returned" | "overdue" | string;
+  borrowedAt: string;
+  returnDueDate: string;
+  returnedAt?: string;
 };
 
 export type TBookInput = z.input<typeof bookSchema>;

@@ -158,21 +158,6 @@ export default function Navbar() {
                   </p>
                 </div>
                 <DropdownMenuSeparator />
-                {/* <DropdownMenuGroup>
-                  <Link href="/my-books">
-                    <DropdownMenuItem className="cursor-pointer">
-                      <Library className="mr-2 h-4 w-4" />
-                      <span>My Books</span>
-                    </DropdownMenuItem>
-                  </Link>
-                  <Link href="/my-borrows">
-                    <DropdownMenuItem className="cursor-pointer">
-                      <BookmarkCheck className="mr-2 h-4 w-4" />
-                      <span>My Borrows</span>
-                    </DropdownMenuItem>
-                  </Link>
-                </DropdownMenuGroup> */}
-
 
                 <DropdownMenuGroup>
                   <Link href="/profile">
@@ -237,7 +222,7 @@ export default function Navbar() {
                   <SheetHeader className="text-left">
                     <SheetTitle className="flex items-center gap-2">
                       <div className="relative h-6 w-6">
-                        <Image src="/logo.png" alt="Logo" fill className="object-contain" />
+                        <Image src="/logo.png" alt="Logo" fill className="object-contain" sizes='50' />
                       </div>
                       <span className="font-heading text-lg font-bold text-primary">BookNook</span>
                     </SheetTitle>
